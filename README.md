@@ -1,5 +1,7 @@
 # blueharbor-infra
 
+Haytam - CESI MSc Smart Information Systems and Cyber Leadership
+
 ## Journal
 
 ### 2026-11-09 - Lab 00
