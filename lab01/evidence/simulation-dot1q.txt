@@ -1,0 +1,19 @@
+Simulation mode - ICMP echo PC-U1 (10.10.30.21) -> SRV-DC (10.10.20.10)
+Path: PC-U1 -> SW-ACC1 -> SW-DIST -> R-HQ G0/0 -> SW-DIST -> SW-ACC2 -> SRV-DC
+
+PDU at R-HQ (GigabitEthernet0/0, router-on-a-stick):
+
+Inbound frame (from SW-DIST, trunk Gi0/1)
+  Ethernet 802.1q  TPID 0x8100  TCI 0x001e  -> VLAN 30 (USERS)
+  SRC MAC 0002.1629.432D (PC-U1)  DST MAC 0007.EC23.6401 (R-HQ G0/0)
+  IP 10.10.30.21 -> 10.10.20.10, TTL 255
+
+Outbound frame (back to SW-DIST, same trunk)
+  Ethernet 802.1q  TPID 0x8100  TCI 0x0014  -> VLAN 20 (SERVERS)
+  SRC MAC 0007.EC23.6401 (R-HQ G0/0)  DST MAC 0060.2F08.3319 (SRV-DC)
+  IP 10.10.30.21 -> 10.10.20.10, TTL 254
+
+What changes: R-HQ receives the frame on sub-interface G0/0.30 (tag 30),
+routes the packet, and sends it out of G0/0.20 with tag 20. It rewrites the
+MAC addresses and decrements the TTL; the IP addresses do not change.
+The frame crosses the same physical link twice, once per VLAN.

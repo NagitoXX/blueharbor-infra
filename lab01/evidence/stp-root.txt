@@ -1,0 +1,20 @@
+SW-DIST(config)#spanning-tree vlan 10,20,30,99 root primary
+
+SW-DIST#show spanning-tree vlan 30
+VLAN0030
+  Spanning tree enabled protocol ieee
+  Root ID    Priority    24606
+             Address     0005.5EA9.7C8B
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    24606  (priority 24576 sys-id-ext 30)
+             Address     0005.5EA9.7C8B
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/24           Desg FWD 19        128.24   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Gi0/1            Desg FWD 4         128.25   P2p
