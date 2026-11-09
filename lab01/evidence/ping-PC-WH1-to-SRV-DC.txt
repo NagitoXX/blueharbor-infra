@@ -1,0 +1,17 @@
+PC-WH1 (DHCP 10.20.40.21/24, gateway 10.20.40.1)
+
+C:\>ping 10.10.20.10
+
+Pinging 10.10.20.10 with 32 bytes of data:
+
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=126
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=126
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=126
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=126
+
+Ping statistics for 10.10.20.10:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+TTL 126 = 128 - 2: the packet crossed two routers (R-WH1, then R-HQ).
