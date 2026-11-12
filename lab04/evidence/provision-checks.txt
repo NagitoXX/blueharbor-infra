@@ -1,0 +1,38 @@
+$ ./lab04/provision.sh
+Usage: provision.sh <vm-name> <vcpu> <ram-mb> <iso-path>
+
+  vm-name   name of the new VM (must not exist yet)
+  vcpu      number of virtual CPUs, e.g. 1
+  ram-mb    memory in MB, e.g. 1024
+  iso-path  installation ISO, e.g. D:/ubuntu-24.04.5-live-server-amd64.iso
+
+Example: provision.sh lab-test 1 1024 "D:/ubuntu-24.04.5-live-server-amd64.iso"
+[exit 2]
+
+$ ./lab04/provision.sh lab-test 1
+error: expected 4 arguments, got 2
+Usage: provision.sh <vm-name> <vcpu> <ram-mb> <iso-path>
+
+  vm-name   name of the new VM (must not exist yet)
+  vcpu      number of virtual CPUs, e.g. 1
+  ram-mb    memory in MB, e.g. 1024
+  iso-path  installation ISO, e.g. D:/ubuntu-24.04.5-live-server-amd64.iso
+
+Example: provision.sh lab-test 1 1024 "D:/ubuntu-24.04.5-live-server-amd64.iso"
+[exit 2]
+
+$ ./lab04/provision.sh lab-test one 1024 D:/ubuntu-24.04.5-live-server-amd64.iso
+error: vcpu must be a positive integer, got 'one'
+[exit 1]
+
+$ ./lab04/provision.sh lab-test 1 256 D:/ubuntu-24.04.5-live-server-amd64.iso
+error: ram-mb must be at least 512 for Ubuntu, got 256
+[exit 1]
+
+$ ./lab04/provision.sh lab-test 1 1024 D:/missing.iso
+error: ISO not found: D:/missing.iso
+[exit 1]
+
+$ ./lab04/provision.sh WEB01 1 1024 D:/ubuntu-24.04.5-live-server-amd64.iso
+error: a VM named 'WEB01' already exists; nothing was changed. Pick another name (only delete the old VM if you are sure nothing depends on it, e.g. no linked clone).
+[exit 1]

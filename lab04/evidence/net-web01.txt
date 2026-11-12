@@ -1,0 +1,55 @@
++ hostname
+web01
++ ip -br addr
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp0s3           UP             10.10.20.20/24 fe80::a00:27ff:fef0:d339/64 
+enp0s8           UP             172.16.30.20/24 fe80::a00:27ff:fe1f:1b8b/64 
++ ip route
+default via 10.10.20.1 dev enp0s3 proto static 
+10.10.20.0/24 dev enp0s3 proto kernel scope link src 10.10.20.20 
+172.16.30.0/24 dev enp0s8 proto kernel scope link src 172.16.30.20 
++ ip route get 1.1.1.1
+1.1.1.1 via 10.10.20.1 dev enp0s3 src 10.10.20.20 uid 1001 
+    cache 
++ ip route get 172.16.30.21
+172.16.30.21 dev enp0s8 src 172.16.30.20 uid 1001 
+    cache 
++ ping -c3 -W2 -I enp0s3 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) from 10.10.20.20 enp0s3: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=255 time=13.4 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=255 time=13.7 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=255 time=12.3 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2006ms
+rtt min/avg/max/mdev = 12.278/13.135/13.729/0.621 ms
++ curl -sS -o /dev/null -w 'http %{http_code} from %{remote_ip}\n' --max-time 8 http://archive.ubuntu.com/ubuntu/
+curl: (28) Resolving timed out after 8003 milliseconds
+http 000 from 
++ ping -c3 -W2 -I enp0s8 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) from 172.16.30.20 enp0s8: 56(84) bytes of data.
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2071ms
+pipe 3
++ ping -c3 -W2 10.10.20.21
+PING 10.10.20.21 (10.10.20.21) 56(84) bytes of data.
+64 bytes from 10.10.20.21: icmp_seq=1 ttl=64 time=12.1 ms
+64 bytes from 10.10.20.21: icmp_seq=2 ttl=64 time=4.92 ms
+64 bytes from 10.10.20.21: icmp_seq=3 ttl=64 time=8.17 ms
+
+--- 10.10.20.21 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 4.915/8.407/12.134/2.951 ms
++ ping -c3 -W2 172.16.30.21
+PING 172.16.30.21 (172.16.30.21) 56(84) bytes of data.
+64 bytes from 172.16.30.21: icmp_seq=1 ttl=64 time=7.18 ms
+64 bytes from 172.16.30.21: icmp_seq=2 ttl=64 time=4.03 ms
+64 bytes from 172.16.30.21: icmp_seq=3 ttl=64 time=4.82 ms
+
+--- 172.16.30.21 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2006ms
+rtt min/avg/max/mdev = 4.031/5.340/7.175/1.336 ms
++ ip neigh show dev enp0s8
+1.1.1.1 FAILED 
+172.16.30.21 lladdr 08:00:27:0d:f6:76 REACHABLE 
