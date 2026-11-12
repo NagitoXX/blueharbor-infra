@@ -1,0 +1,9 @@
+﻿memory=1024
+cpuexecutioncap=50
+cpus=2
+paravirtprovider="default"
+nproc=2
+stress-ng: metrc: [1053] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+stress-ng: metrc: [1053]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: metrc: [1053] cpu               20953     30.01     31.64     24.17       698.27         375.40
+stress-ng: info:  [1053] passed: 2: cpu (2)

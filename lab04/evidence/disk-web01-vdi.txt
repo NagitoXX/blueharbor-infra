@@ -1,0 +1,13 @@
+﻿UUID:           d2da174e-4a72-43be-a663-360274dec32d
+Parent UUID:    base
+State:          locked read
+Type:           normal (base)
+Location:       D:\windows 2025 server\UIR-2024\WEB01\WEB01.vdi
+Storage format: VDI
+Format variant: dynamic default
+Capacity:       25600 MBytes
+Size on disk:   4075 MBytes
+Encryption:     disabled
+Property:       AllocationBlockSize=1048576
+In use by VMs:  WEB01 (UUID: 9a811435-bbe1-40e0-a171-25c7b7caad18) [Lien de base pour WEB01 et WEB02 (UUID: fe96701d-aa1b-4619-a643-9462ad364f7c)]
+Child UUIDs:    74a10825-0125-40b2-89e4-0883fe32c651
