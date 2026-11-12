@@ -1,0 +1,30 @@
++ grep -E 'DNS Servers|Current DNS'
++ resolvectl status enp0s3
+Current DNS Server: 10.10.20.10
+       DNS Servers: 10.10.20.10 1.1.1.1
++ getent hosts archive.ubuntu.com
+resolve-failed
++ echo resolve-failed
++ dig +short +time=3 +tries=1 @1.1.1.1 archive.ubuntu.com
+;; communications error to 1.1.1.1#53: timed out
+;; no servers could be reached
++ curl -sS -o /dev/null -w 'http %{http_code} from %{remote_ip}\n' --max-time 30 http://archive.ubuntu.com/ubuntu/
+curl: (6) Could not resolve host: archive.ubuntu.com
+http 000 from 
++ dig +short +time=3 +tries=1 @10.96.23.50 archive.ubuntu.com
+185.125.190.81
+185.125.190.82
+91.189.92.23
+91.189.90.11
+91.189.91.81
+91.189.92.22
+91.189.90.12
+91.189.91.82
+185.125.190.83
+91.189.90.13
+91.189.91.83
+91.189.92.24
+++ dig +short +time=3 +tries=1 @10.96.23.50 archive.ubuntu.com
+++ grep -m1 -E '^[0-9.]+$'
++ curl -sS -o /dev/null -w 'http %{http_code} from %{remote_ip}\n' --max-time 15 --resolve archive.ubuntu.com:80:185.125.190.82 http://archive.ubuntu.com/ubuntu/
+http 200 from 185.125.190.82

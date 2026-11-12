@@ -31,7 +31,7 @@ The result is a **hybrid** model: on-premises and public cloud connected by encr
 | VLAN 99 MGMT | 10.10.99.0/24 | 10.10.99.1 | Switch management (SW-DIST .11, SW-ACC1 .12, SW-ACC2 .13) |
 | WAN HQ-WH1 | 10.255.0.0/30 | - | R-HQ .1, R-WH1 .2 |
 | WH1 LAN | 10.20.40.0/24 | 10.20.40.1 | Warehouse devices (DHCP from .21) |
-| BH-STORAGE | 172.16.30.0/24 | none | VirtualBox internal network for NFS and iSCSI |
+| BH-STORAGE | 172.16.30.0/24 | none | VirtualBox internal network for NFS and iSCSI (WEB01 .20, WEB02 .21) |
 
 ### Active Directory (Lab 02)
 
@@ -64,6 +64,24 @@ blueharbor.internal
 | _msdcs.blueharbor.internal | Primary, AD-integrated (forest) | Domain controller locator records |
 
 Forwarders for names outside the domain: 10.96.23.50, 10.96.23.51 (school network resolvers, because public DNS is blocked there), then 1.1.1.1.
+
+### Virtual lab: VM inventory and networks (Lab 04)
+
+The servers run as VirtualBox 7.2 VMs on one laptop (i7-13620H, 16 threads, 16 GB RAM). VM files are on an external USB drive (`D:\windows 2025 server\UIR-2024\`). Details: [lab04/capacity.md](../lab04/capacity.md).
+
+| VM | Role | OS | vCPU | RAM | Disk | NIC 1: `BH-SRV` | NIC 2: `BH-STORAGE` | Snapshots |
+|----|------|----|------|-----|------|-----------------|---------------------|-----------|
+| DC01 | Domain controller, DNS | Windows Server 2025 | 2 | 4 096 MB | 61 GB dynamic | 10.10.20.10 | - | `dc01-clean` |
+| WEB01 | Web server (nginx), template of the Linux clones | Ubuntu 24.04 | 2 | 2 048 MB | 25 GB dynamic | 10.10.20.20 | 172.16.30.20 | `base-hardened` (parent of WEB02, **do not delete**), `before-break` |
+| WEB02 | Second web server | Ubuntu 24.04 | 1 | 1 024 MB | linked clone of WEB01 `base-hardened` | 10.10.20.21 | 172.16.30.21 | `web02-clean` |
+| STOR01 | Storage server (NFS/iSCSI) | Ubuntu 24.04 | 1 | 1 024 MB | linked clone + 2 × 10 GB data disks | 10.10.20.30 | 172.16.30.30 | **planned, not created yet** |
+
+| Virtual network | VirtualBox mode | Subnet | Reaches | Reached from the laptop |
+|-----------------|-----------------|--------|---------|-------------------------|
+| `BH-SRV` | NAT Network | 10.10.20.0/24, gateway 10.10.20.1 | the other VMs and the Internet | only through port forwards: 127.0.0.1:2220 → WEB01:22, :2221 → WEB02:22, :2230 → STOR01:22 |
+| `BH-STORAGE` | Internal network | 172.16.30.0/24, no gateway | only the other VMs on it | **never** (no host adapter, no forwarding) |
+
+Storage traffic stays on `BH-STORAGE`, so it does not compete with client traffic and storage cannot be reached from outside the servers ([lab04/networks.md](../lab04/networks.md)).
 
 ## Operations
 
@@ -136,6 +154,55 @@ When the service is down (Exercise 3.5): `curl -I http://localhost`, then follow
 
 The four faults met in the challenge are documented in [lab03/troubleshooting.md](../lab03/troubleshooting.md).
 
+### Create a new VM (Lab 04)
+
+From Git Bash at the root of the repository:
+
+```bash
+./lab04/provision.sh <name> <vcpu> <ram-mb> "D:/ubuntu-24.04.5-live-server-amd64.iso"
+```
+
+The script refuses to run if the VM already exists, and prints its usage when an argument is missing or wrong. It creates the VM in VirtualBox's default machine folder: 10 GB dynamic disk, NIC 1 on `BH-SRV`, paravirtualisation KVM, ISO in the DVD drive. Then start the VM and install Ubuntu. Remove a test VM with `VBoxManage unregistervm <name> --delete`; the ISO is not deleted. Script: [lab04/provision.sh](../lab04/provision.sh).
+
+### Clone a server (Lab 04)
+
+A new Ubuntu server is a **linked clone** of WEB01's `base-hardened` snapshot (patched and hardened). It takes a few seconds and a few MB.
+
+1. On the host: `VBoxManage clonevm WEB01 --snapshot base-hardened --options link --name <NEW> --basefolder "D:\windows 2025 server\UIR-2024" --register`, then `VBoxManage modifyvm <NEW> --cpus 1 --memory 1024`. Add `--nic2 intnet --intnet2 BH-STORAGE` if it needs the storage network.
+2. **WEB01 must be off before the clone's first boot.** The clone starts with WEB01's identity, IP included.
+3. On the clone's console, as root, give it its own identity ([lab04/web02-identity.sh](../lab04/web02-identity.sh)):
+   - hostname, also in `/etc/hosts`;
+   - IP in the netplan file;
+   - new `/etc/machine-id`;
+   - new SSH host keys;
+   - then reboot.
+4. Add a DNS record on DC01, a port forward on `BH-SRV` (`VBoxManage natnetwork modify --netname BH-SRV --port-forward-4 "ssh-<new>:tcp:[127.0.0.1]:<port>:[<ip>]:22"`), and a `Host` entry in `~/.ssh/config`.
+5. Take a `<new>-clean` snapshot.
+
+Rules:
+
+- never delete WEB01, its `base-hardened` snapshot or its disk files while a linked clone exists;
+- a clone that must outlive WEB01 is made as a full clone (without `--options link`).
+
+Details: [lab04/lifecycle.md](../lab04/lifecycle.md).
+
+### Roll back a server (Lab 04)
+
+Before a risky change (update, configuration, test), take a snapshot. Undo it if the change fails:
+
+```text
+VBoxManage snapshot <VM> take "before-<change>" --description "<what and why>"
+...change, test...
+VBoxManage controlvm <VM> acpipowerbutton          # VM must be off (or use a live snapshot, see below)
+VBoxManage snapshot <VM> restore "before-<change>"
+VBoxManage startvm <VM> --type headless
+```
+
+- A snapshot taken while the VM was running also holds its RAM. After a restore, the VM resumes where it was.
+- Everything written after the snapshot is lost, logs and data included.
+- When the change is validated, delete the snapshot (`VBoxManage snapshot <VM> delete "<name>"`), so that long chains do not slow the disk.
+- **A snapshot is not a backup.** It sits on the same drive and depends on its whole chain of files. Real backups are covered in Lab 08.
+
 ## Risks
 
 First entries, from the directory audit of Lab 02 ([lab02/audit.md](../lab02/audit.md)):
@@ -161,3 +228,14 @@ From the WEB01 hardening of Lab 03 (Lynis index 63 → 71). These Lynis suggesti
 | KRNL-6000, NETW-3200, USB-1000: extra sysctl values, unused protocols, USB storage | Small extra attack surface in the kernel | Low risk on a VM without USB; next hardening pass | Planned |
 | No swap on WEB01 (Lab 03 USE report) | A memory peak ends in an OOM kill of nginx instead of a slowdown | Add a 1 GB swap file with low swappiness | Open |
 | The health check runs on the server it watches (Lab 03 challenge) | If the timer is disabled or the server dies, nobody is warned | Outside HTTP probe and heartbeat on the health log | Open |
+
+Capacity limits of the virtualisation host (Lab 04, [lab04/capacity.md](../lab04/capacity.md), [resources.md](../lab04/resources.md)):
+
+| Risk | Evidence | Impact | Action | Status |
+|------|----------|--------|--------|--------|
+| **RAM overcommitted**: 8 GB of VMs + about 10.6 GB used by Windows and apps on a 16 GB laptop (118 %) | Lab 03: host down to about 500 MB free and the NAT service (VBoxNetNAT) crashed. Lab 04: WEB01 kernel panic at boot with 3.4 GB free | VMs crash or lose their network; DC01 + WEB01 already make the host swap | Close the browser before starting DC01 with the Linux VMs; upgrade to 32 GB (2 × 16 GB DDR5 SO-DIMM) | Open |
+| **Disk is the bottleneck**: VMs on an external USB hard drive | Lab 03 USE report: `%util` 88-99 %, writes waiting up to 1 s | Slow boots, updates and builds; risk of corruption if the cable is pulled | Move the VMs to an internal NVMe SSD | Open |
+| **Disk overcommitted**: 136 GB of dynamic disks on 131.7 GB free | `showmediuminfo`: only 32 GB really used today | If the guests fill their disks, D: fills and every VM stops writing at once | Watch free space on D:; compact disks after cleanups; fixed-size disks for critical servers | Open |
+| **Single host, single drive**: every VM, snapshot and linked-clone base is on one laptop and one USB drive | WEB02 depends on WEB01's disk chain | Loss or failure of the drive or laptop loses the whole lab, snapshots included | Export the template (`VBoxManage export`) to another disk; real backups (Lab 08) | Open |
+| **No swap in the Linux VMs** | Lab 04: `stress-ng --vm 1200M` on WEB02 (961 MB) was refused at once, `si`/`so` = 0 | A VM given less RAM than its workload fails instead of slowing down | Size RAM on measured working sets; add a small swap file | Open |
+| **CPU**: 6 vCPU on 16 threads (0.38 : 1) | Lab 04: 1 → 2 vCPU gave × 4.5 on a parallel load; CPU cap 50 % only removed 13 % | No risk today | Keep vCPU ≤ host threads; no CPU cap as a sizing tool | OK |

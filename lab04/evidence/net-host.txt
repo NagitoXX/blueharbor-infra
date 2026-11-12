@@ -1,0 +1,25 @@
+﻿== Host IPv4 addresses
+vEthernet (WSL (Hyper-V firewall))       172.18.192.1/20
+Ethernet 2                               192.168.56.1/24
+VMware Network Adapter VMnet8            192.168.204.1/24
+VMware Network Adapter VMnet1            192.168.41.1/24
+Wi-Fi                                    10.159.129.41/17
+Loopback Pseudo-Interface 1              127.0.0.1/8
+== Host routes to 10.10.20.0/24 or 172.16.30.0/24 (Find-NetRoute)
+10.10.20.20 -> via 10.159.128.1 on Wi-Fi (default route, no specific route)
+172.16.30.20 -> via 10.159.128.1 on Wi-Fi (default route, no specific route)
+ping 10.10.20.20 : False ; tcp/22 10.10.20.20 : False
+ping 10.10.20.21 : False ; tcp/22 10.10.20.21 : False
+ping 172.16.30.20 : False ; tcp/22 172.16.30.20 : False
+ping 172.16.30.21 : False ; tcp/22 172.16.30.21 : False
+== Port forwards through the NAT network (127.0.0.1)
+tcp/127.0.0.1:2220 : True
+tcp/127.0.0.1:2221 : True
+NAT Networks:
+Name:         BH-SRV
+Network:      10.10.20.0/24
+Port-forwarding (ipv4)
+        ssh-stor01:tcp:[127.0.0.1]:2230:[10.10.20.30]:22
+        ssh-web01:tcp:[127.0.0.1]:2220:[10.10.20.20]:22
+        ssh-web02:tcp:[127.0.0.1]:2221:[10.10.20.21]:22
+1 network found

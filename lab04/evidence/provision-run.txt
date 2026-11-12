@@ -1,0 +1,55 @@
+$ ./lab04/provision.sh lab-test 1 1024 D:/ubuntu-24.04.5-live-server-amd64.iso
+== Creating lab-test: 1 vCPU, 1024 MB, 10240 MB disk, NIC1 on BH-SRV, in C:\Users\Ihssa\VirtualBox VMs/lab-test
+Virtual machine 'lab-test' is created and registered.
+UUID: ed291e4c-d2bd-4619-8598-4034fea6a36c
+Settings file: 'C:\Users\Ihssa\VirtualBox VMs\lab-test\lab-test.vbox'
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+Medium created. UUID: 1d726b14-261d-46eb-a1a5-e28c4b07fbf1
+== Result
+memory=1024
+cpus=1
+paravirtprovider="kvm"
+"SATA-0-0"="C:\\Users\\Ihssa\\VirtualBox VMs\\lab-test\\lab-test.vdi"
+"SATA-1-0"="D:\\ubuntu-24.04.5-live-server-amd64.iso"
+nat-network1="BH-SRV"
+nic1="natnetwork"
+== Done. Start it with: VBoxManage startvm "lab-test" --type gui
+[exit 0]
+
+$ ./lab04/provision.sh lab-test 1 1024 D:/ubuntu-24.04.5-live-server-amd64.iso   # second run
+error: a VM named 'lab-test' already exists; nothing was changed. Pick another name (only delete the old VM if you are sure nothing depends on it, e.g. no linked clone).
+[exit 1]
+
+$ VBoxManage list vms
+"WEB01" {9a811435-bbe1-40e0-a171-25c7b7caad18}
+"DC01" {419db242-4661-4b5e-bcf6-f801fd669cf2}
+"WEB02" {84d4c7af-f937-4913-9f89-9d664d623a0b}
+"lab-test" {ed291e4c-d2bd-4619-8598-4034fea6a36c}
+
+$ ls -la "C:/Users/Ihssa/VirtualBox VMs/lab-test"
+total 2060
+drwxr-xr-x 1 msi 197609       0 Nov 12 15:20 .
+drwxr-xr-x 1 msi 197609       0 Nov 12 15:20 ..
+-rw-r--r-- 1 msi 197609    2425 Nov 12 15:20 lab-test.vbox
+-rw-r--r-- 1 msi 197609    2080 Nov 12 15:20 lab-test.vbox-prev
+-rw-r--r-- 1 msi 197609 2097152 Nov 12 15:20 lab-test.vdi
+
+$ VBoxManage unregistervm lab-test --delete
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+[exit 0]
+
+$ VBoxManage list vms
+"WEB01" {9a811435-bbe1-40e0-a171-25c7b7caad18}
+"DC01" {419db242-4661-4b5e-bcf6-f801fd669cf2}
+"WEB02" {84d4c7af-f937-4913-9f89-9d664d623a0b}
+
+$ ls "C:/Users/Ihssa/VirtualBox VMs/"
+total 32
+drwxr-xr-x 1 msi 197609 0 Nov 12 15:20 .
+drwxr-xr-x 1 msi 197609 0 Nov 12 15:20 ..
+
+$ ls -l D:/ubuntu-24.04.5-live-server-amd64.iso   # the ISO is not deleted
+-rw-r--r-- 1 msi 197609 4080486400 Nov  9 13:48 /d/ubuntu-24.04.5-live-server-amd64.iso
+
+$ VBoxManage list hdds | grep lab-test   # disk unregistered
+0
