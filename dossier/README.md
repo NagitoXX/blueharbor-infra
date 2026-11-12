@@ -91,6 +91,51 @@ Never put a user directly into a share or NTFS permission. Change group membersh
 
 Temporary access (for example an auditor): put the account in a global group nested in `DL_<Share>_R` and set an account expiry date ([lab02/agdlp.md](../lab02/agdlp.md)).
 
+### SSH access to the Linux servers (Lab 03)
+
+Linux servers accept **SSH keys only**: no password login, no root login, 3 tries, and only members of the `sudo` group (`/etc/ssh/sshd_config.d/10-hardening.conf` and `20-lynis.conf`). ufw only lets SSH in from 10.10.20.0/24.
+
+1. **Create your key once**, on your own laptop: `ssh-keygen -t ed25519 -C "<initials>@blueharbor"`. Protect it with a passphrase. On Windows, the private key file must be readable by your account only.
+2. **Have it installed**: an existing admin appends your `.pub` file to `/home/<user>/.ssh/authorized_keys` (directory 700, file 600, owned by the user), and adds the user to the `sudo` group if they administer the server. Never send the private key.
+3. **Connect** with the shortcut in `~/.ssh/config`:
+
+   | Host | Address | Port forward | User |
+   |------|---------|--------------|------|
+   | web01 | 10.10.20.20 | 127.0.0.1:2220 | opsadmin |
+   | web02 | 10.10.20.21 | 127.0.0.1:2221 | opsadmin |
+   | stor01 | 10.10.20.30 | 127.0.0.1:2230 | opsadmin |
+
+   `ssh web01`. On the first connection, compare the fingerprint shown with the one on the VM console (`ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`).
+4. **Remove access**: delete the line from `authorized_keys` and remove the user from `sudo`.
+5. **Locked out** (after an SSH change): open the VM console in VirtualBox, sign in, run `sshd -t`, then fix or remove the file in `/etc/ssh/sshd_config.d/`.
+
+### Health-check runbook (Lab 03)
+
+`/usr/local/bin/bh-health.sh` runs every 5 minutes through `bh-health.timer` and appends one line to `/var/log/bh-health.log`: load, memory %, disk %, status. It raises `WARN` at **80 % disk** or **90 % memory** and writes it to the journal with the tag `bh-health`. Files: [lab03/bh-health.sh](../lab03/bh-health.sh), [.service](../lab03/bh-health.service), [.timer](../lab03/bh-health.timer).
+
+| Check | Command | Expected |
+|-------|---------|----------|
+| Timer running | `systemctl list-timers bh-health.timer` | a NEXT time within 5 minutes |
+| Recent results | `tail -5 /var/log/bh-health.log` | last line less than 5 minutes old, `status=OK` |
+| Warnings | `journalctl -t bh-health --since today` | empty |
+| Run now | `sudo systemctl start bh-health.service` | a new line in the log |
+
+When a line says `status=WARN`:
+
+- **Disk:** `df -h /`, then `sudo du -xh / --max-depth=2 | sort -h | tail` to find the big directory. Look for hidden files (`ls -la`). Check that a file is not in use (`fuser`) before deleting it.
+- **Memory:** `free -h`, `top` sorted by memory (`M`). There is no swap on WEB01, so act before the kernel kills a process.
+- **No new line for more than 10 minutes:** the check itself is broken. Run `systemctl is-enabled bh-health.timer` and `systemctl status bh-health.service`. Re-enable with `sudo systemctl enable --now bh-health.timer`.
+
+When the service is down (Exercise 3.5): `curl -I http://localhost`, then follow the method in this order:
+
+1. service state (`systemctl status`; a *masked* unit is not listed as failed);
+2. logs (`journalctl -u <unit>`);
+3. resources (`df`, `du`);
+4. permissions (`ls -l`);
+5. scheduled jobs (`systemctl list-timers`).
+
+The four faults met in the challenge are documented in [lab03/troubleshooting.md](../lab03/troubleshooting.md).
+
 ## Risks
 
 First entries, from the directory audit of Lab 02 ([lab02/audit.md](../lab02/audit.md)):
@@ -101,3 +146,18 @@ First entries, from the directory audit of Lab 02 ([lab02/audit.md](../lab02/aud
 | The Administrator password predates the 12- and 16-character policies; the DC clock was wrong during the install | Weak password on the most powerful account; Kerberos failures if the clock drifts | Change the password now (16+ characters); set a reliable NTP source on DC01 | Open |
 | 7 enabled accounts never used, all staff share the same initial password | Anyone who knows it can take over a colleague's account | Unique initial passwords; disable unused accounts after 14 days; monthly audit | Open |
 | PSO-Admins was created with reversible encryption on (cmdlet default) | Admin passwords stored in a decryptable form | Turned off; always pass `-ReversibleEncryptionEnabled $false` | Fixed |
+
+From the WEB01 hardening of Lab 03 (Lynis index 63 → 71). These Lynis suggestions were **not applied**, on purpose ([lab03/hardening.md](../lab03/hardening.md)):
+
+| Lynis suggestion | Risk if left | Why not fixed now | Status |
+|------------------|--------------|-------------------|--------|
+| HTTP-6710: no HTTPS on nginx | Traffic to the status page can be read or altered on the network | Needs a certificate; planned with the reverse proxy / PKI work. The page holds no sensitive data yet | Accepted, planned |
+| FILE-6310: /var, /tmp, /home on the root partition | A full /var (logs, temp files) fills the whole system, as in the Lab 03 challenge (88 %) | Needs re-partitioning; the 80 % alert of bh-health.sh covers it meanwhile | Accepted |
+| ACCT-9628 auditd, FINT-4350 file integrity, LOGG-2154 remote logging | Changes to system files and permissions go unnoticed; logs can be erased by an intruder | Each needs storage and a review routine; planned with central logging | Planned |
+| BOOT-5122: no GRUB password | Anyone with console access can boot in single-user mode | Console access already means access to the VirtualBox host; a GRUB password blocks unattended reboots | Accepted |
+| AUTH-9230/9262/9286: local password hashing, quality and ageing | Weak local passwords for sudo and the console | SSH accepts keys only; to be handled with central identity (AD) | Accepted |
+| DEB-0880: no fail2ban | Brute-force attempts are not banned | Password login is off and SSH only accepts the lab network | Accepted |
+| SSH-7408 `Port`: SSH stays on 22 | Port 22 is scanned first | Moving it only hides it; the firewall and key-only login protect it | Accepted |
+| KRNL-6000, NETW-3200, USB-1000: extra sysctl values, unused protocols, USB storage | Small extra attack surface in the kernel | Low risk on a VM without USB; next hardening pass | Planned |
+| No swap on WEB01 (Lab 03 USE report) | A memory peak ends in an OOM kill of nginx instead of a slowdown | Add a 1 GB swap file with low swappiness | Open |
+| The health check runs on the server it watches (Lab 03 challenge) | If the timer is disabled or the server dies, nobody is warned | Outside HTTP probe and heartbeat on the health log | Open |

@@ -1,0 +1,52 @@
+########## 0. Symptom
+curl: (7) Failed to connect to localhost port 80 after 9 ms: Couldn't connect to server
+########## 1. Service state
+* nginx.service
+     Loaded: masked (Reason: Unit nginx.service is masked.)
+     Active: inactive (dead) since Thu 2026-11-12 10:02:45 UTC; 43s ago
+   Duration: 3min 31.054s
+   Main PID: 755 (code=exited, status=0/SUCCESS)
+        CPU: 23ms
+masked
+lrwxrwxrwx 1 root root 9 Nov 12 10:02 /etc/systemd/system/nginx.service -> /dev/null
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+########## 2. Logs (warnings since boot, last 25)
+Nov 12 09:58:58 web01 kernel: APIC calibration not consistent with PM-Timer: 127ms instead of 100ms
+Nov 12 09:58:58 web01 kernel: mtrr: your CPUs had inconsistent variable MTRR settings
+Nov 12 09:58:58 web01 kernel: acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended configuration space under this bridge
+Nov 12 09:58:58 web01 kernel: device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+Nov 12 09:58:58 web01 kernel: clocksource: Long readout interval, skipping watchdog check: cs_nsec: 1308894832 wd_nsec: 1308894276
+Nov 12 09:59:12 web01 (cron)[713]: cron.service: Referenced but unset environment variable evaluates to an empty string: EXTRA_OPTS
+Nov 12 09:59:22 web01 login[737]: PAM unable to dlopen(pam_lastlog.so): /usr/lib/security/pam_lastlog.so: cannot open shared object file: No such file or directory
+Nov 12 09:59:22 web01 login[737]: PAM adding faulty module: pam_lastlog.so
+Nov 12 09:59:22 web01 kernel: clocksource: Long readout interval, skipping watchdog check: cs_nsec: 2756048833 wd_nsec: 2756047720
+########## 3. Resources
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        25G   21G  3.0G  88% /
+160M	/var/cache
+251M	/var/lib
+281M	/usr/share
+1.9G	/usr/lib
+2.4G	/usr
+18G	/var
+18G	/var/tmp
+21G	/
+total 18120160
+drwxrwxrwt  5 root root        4096 Nov 12 10:02 .
+drwxr-xr-x 14 root root        4096 Nov 12 09:23 ..
+-rw-r--r--  1 root root 18555017626 Nov 12 10:02 .bh-cache.bin
+drwx------  3 root root        4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-logind.service-6g0pEp
+drwx------  3 root root        4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-resolved.service-eus5sW
+drwx------  3 root root        4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-timesyncd.service-CyEkaH
+########## 4. Permissions
+total 4
+---------- 1 root root 615 Nov 12 09:23 index.nginx-debian.html
+########## 5. Scheduled jobs
+NEXT                                 LEFT LAST                              PASSED UNIT                           ACTIVATES
+disabled
+inactive
+2026-11-12T09:50:00+00:00 host=web01 load=1.85 mem=19% disk=13% status=OK
+2026-11-12T09:55:08+00:00 host=web01 load=1.84 mem=20% disk=13% status=OK
+2026-11-12T10:00:12+00:00 host=web01 load=1.03 mem=15% disk=13% status=OK
