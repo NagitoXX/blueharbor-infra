@@ -1,0 +1,2 @@
+﻿Paravirt. Provider:          KVM
+Effective Paravirt. Prov.:   KVM

@@ -1,0 +1,9 @@
+﻿memory=1024
+cpuexecutioncap=100
+cpus=2
+paravirtprovider="kvm"
+nproc=2
+stress-ng: metrc: [1111] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+stress-ng: metrc: [1111]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: metrc: [1111] cpu               25060     30.68     36.71     22.72       816.75         421.73
+stress-ng: info:  [1111] passed: 2: cpu (2)
