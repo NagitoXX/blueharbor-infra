@@ -1,0 +1,56 @@
+﻿# Exercise 4.1 inventory, 2026-11-12T11:13:24
+## VBoxManage list hostinfo
+Host Information:
+
+Host time: 2026-11-12T10:13:24.254000000Z
+Processor online count: 16
+Processor count: 16
+Processor online core count: 10
+Processor core count: 10
+Processor supports HW virtualization: yes
+Processor supports PAE: yes
+Processor supports long mode: yes
+Processor supports nested paging: yes
+Processor supports unrestricted guest: no
+Processor supports nested HW virtualization: no
+Processor supports virt. vmsave/vmload: no
+Memory size: 16087 MByte
+Memory available: 5473 MByte
+Operating system: Windows 11
+Operating system version: 10.0.26300.9974
+## VBoxManage list vms
+"WEB01" {9a811435-bbe1-40e0-a171-25c7b7caad18}
+"DC01" {419db242-4661-4b5e-bcf6-f801fd669cf2}
+"WEB02" {882e9604-8818-42c9-b699-cd6e7d204b92}
+"STOR01" {c1d43cf0-db09-4d7c-9364-794adf71b3ba}
+## VBoxManage list runningvms
+(none)
+## VBoxManage showvminfo DC01 --machinereadable | findstr /i "cpus memory"
+memory=4096
+cpus=2
+GuestMemoryBalloon=0
+## VBoxManage showvminfo WEB01 --machinereadable | findstr /i "cpus memory"
+memory=2048
+cpus=2
+GuestMemoryBalloon=0
+## VBoxManage showvminfo WEB02 --machinereadable | findstr /i "cpus memory"
+memory=1024
+cpus=1
+GuestMemoryBalloon=0
+## VBoxManage showvminfo STOR01 --machinereadable | findstr /i "cpus memory"
+memory=1024
+cpus=1
+GuestMemoryBalloon=0
+## Windows memory without any VM running
+Total 16 087 MB, free 5 456 MB
+## Top 10 processes by working set (MB)
+opera                           1 186
+opera                             999
+opera                             962
+opera                             760
+opera                             716
+claude                            620
+opera                             612
+opera                             522
+opera                             505
+opera                             496
