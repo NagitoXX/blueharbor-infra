@@ -1,0 +1,49 @@
+Linux 6.8.0-149-generic (web01) 	11/12/26 	_x86_64_	(2 CPU)
+
+09:33:46        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+09:33:48           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:48       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:46        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+09:33:48           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:48       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:48        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+09:33:50           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:50       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:48        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+09:33:50           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:50       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:50        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+09:33:52           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:52       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:50        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+09:33:52           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:52       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:52        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+09:33:54           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:54       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:52        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+09:33:54           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:54       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:54        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+09:33:56           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:56       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+09:33:54        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+09:33:56           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+09:33:56       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+Average:        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s   %ifutil
+Average:           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+Average:       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+
+Average:        IFACE   rxerr/s   txerr/s    coll/s  rxdrop/s  txdrop/s  txcarr/s  rxfram/s  rxfifo/s  txfifo/s
+Average:           lo      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00
+Average:       enp0s3      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00

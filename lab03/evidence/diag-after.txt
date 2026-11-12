@@ -1,0 +1,57 @@
+########## 0. Symptom
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Thu, 12 Nov 2026 10:04:45 GMT
+########## 1. Service state
+* nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2026-11-12 10:04:18 UTC; 27s ago
+       Docs: man:nginx(8)
+   Main PID: 1448 (nginx)
+      Tasks: 3 (limit: 2263)
+enabled
+ls: cannot access '/etc/systemd/system/nginx.service': No such file or directory
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+########## 2. Logs (warnings since boot, last 25)
+Nov 12 09:58:58 web01 kernel: APIC calibration not consistent with PM-Timer: 127ms instead of 100ms
+Nov 12 09:58:58 web01 kernel: mtrr: your CPUs had inconsistent variable MTRR settings
+Nov 12 09:58:58 web01 kernel: acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended configuration space under this bridge
+Nov 12 09:58:58 web01 kernel: device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+Nov 12 09:58:58 web01 kernel: clocksource: Long readout interval, skipping watchdog check: cs_nsec: 1308894832 wd_nsec: 1308894276
+Nov 12 09:59:12 web01 (cron)[713]: cron.service: Referenced but unset environment variable evaluates to an empty string: EXTRA_OPTS
+Nov 12 09:59:22 web01 login[737]: PAM unable to dlopen(pam_lastlog.so): /usr/lib/security/pam_lastlog.so: cannot open shared object file: No such file or directory
+Nov 12 09:59:22 web01 login[737]: PAM adding faulty module: pam_lastlog.so
+Nov 12 09:59:22 web01 kernel: clocksource: Long readout interval, skipping watchdog check: cs_nsec: 2756048833 wd_nsec: 2756047720
+########## 3. Resources
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2        25G  3.0G   21G  13% /
+156M	/usr/src
+160M	/var/cache
+251M	/var/lib
+281M	/usr/share
+493M	/var
+1.9G	/usr/lib
+2.4G	/usr
+3.0G	/
+total 32
+drwxrwxrwt  8 root root 4096 Nov 12 10:04 .
+drwxr-xr-x 14 root root 4096 Nov 12 09:23 ..
+drwx------  3 root root 4096 Nov 12 10:04 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-fwupd.service-tXWPgz
+drwx------  3 root root 4096 Nov 12 10:04 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-polkit.service-gqN8Aj
+drwx------  3 root root 4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-logind.service-6g0pEp
+drwx------  3 root root 4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-resolved.service-eus5sW
+drwx------  3 root root 4096 Nov 12 09:59 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-systemd-timesyncd.service-CyEkaH
+drwx------  3 root root 4096 Nov 12 10:04 systemd-private-5a0b81f1cb8c4f6dae70a2734d27d416-upower.service-uOaJMP
+########## 4. Permissions
+total 4
+-rw-r--r-- 1 root root 615 Nov 12 09:23 index.nginx-debian.html
+########## 5. Scheduled jobs
+NEXT                            LEFT LAST                              PASSED UNIT                           ACTIVATES
+Thu 2026-11-12 10:05:00 UTC      13s Thu 2026-11-12 10:00:12 UTC            - bh-health.timer                bh-health.service
+enabled
+active
+2026-11-12T09:55:08+00:00 host=web01 load=1.84 mem=20% disk=13% status=OK
+2026-11-12T10:00:12+00:00 host=web01 load=1.03 mem=15% disk=13% status=OK
+2026-11-12T10:04:18+00:00 host=web01 load=0.13 mem=18% disk=13% status=OK

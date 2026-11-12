@@ -1,0 +1,31 @@
+== journalctl -k -p warning -b
+Nov 12 09:15:56 web01 kernel: workqueue: ata_sff_pio_task hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+Nov 12 09:17:48 web01 kernel: workqueue: blk_mq_run_work_fn hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:20 web01 kernel: workqueue: blk_mq_run_work_fn hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:23 web01 kernel: workqueue: blk_mq_requeue_work hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:50 web01 kernel: workqueue: blk_mq_requeue_work hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:51 web01 kernel: workqueue: e1000_watchdog [e1000] hogged CPU for >10000us 32 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:51 web01 kernel: workqueue: drain_vmap_area_work hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+Nov 12 09:18:52 web01 kernel: workqueue: blk_mq_run_work_fn hogged CPU for >10000us 32 times, consider switching to WQ_UNBOUND
+Nov 12 09:19:29 web01 kernel: workqueue: blk_mq_requeue_work hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+Nov 12 09:19:53 web01 kernel: kauditd_printk_skb: 94 callbacks suppressed
+Nov 12 09:20:04 web01 kernel: workqueue: drm_fb_helper_damage_work hogged CPU for >10000us 512 times, consider switching to WQ_UNBOUND
+Nov 12 09:20:19 web01 kernel: kauditd_printk_skb: 107 callbacks suppressed
+Nov 12 09:20:26 web01 kernel: workqueue: blk_mq_run_work_fn hogged CPU for >10000us 64 times, consider switching to WQ_UNBOUND
+Nov 12 09:21:06 web01 kernel: workqueue: ata_sff_pio_task hogged CPU for >10000us 8 times, consider switching to WQ_UNBOUND
+Nov 12 09:23:15 web01 (cron)[8943]: cron.service: Referenced but unset environment variable evaluates to an empty string: EXTRA_OPTS
+Nov 12 09:23:53 web01 kernel: workqueue: blk_mq_run_work_fn hogged CPU for >10000us 128 times, consider switching to WQ_UNBOUND
+Nov 12 09:27:58 web01 kernel: workqueue: e1000_watchdog [e1000] hogged CPU for >10000us 64 times, consider switching to WQ_UNBOUND
+Nov 12 09:28:24 web01 kernel: workqueue: ata_sff_pio_task hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+Nov 12 09:28:47 web01 kernel: workqueue: blk_mq_requeue_work hogged CPU for >10000us 32 times, consider switching to WQ_UNBOUND
+Nov 12 09:38:24 web01 kernel: workqueue: drain_vmap_area_work hogged CPU for >10000us 16 times, consider switching to WQ_UNBOUND
+== OOM / IO errors
+Nov 12 08:53:32 WEB01 kernel: Calibrating delay loop (skipped) preset value.. 5836.79 BogoMIPS (lpj=2918398)
+== swap
+(no output = no swap)
+== disk layout
+NAME    SIZE TYPE MOUNTPOINT
+sda      25G disk 
+├─sda1    1M part 
+└─sda2   25G part /
+sr0    1024M rom  
