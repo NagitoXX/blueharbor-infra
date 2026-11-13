@@ -1,0 +1,12 @@
+18c18
+<     HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+---
+>     HOME_NET: "[10.10.20.0/24,172.16.30.0/24]"
+615c615
+<   - interface: eth0
+---
+>   - interface: enp0s3
+2150:default-rule-path: /var/lib/suricata/rules
+2151-
+2152-rule-files:
+2153-  - suricata.rules

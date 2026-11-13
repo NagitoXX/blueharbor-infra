@@ -1,0 +1,24 @@
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+This is Suricata version 7.0.3 RELEASE
+Features: NFQ PCAP_SET_BUFF AF_PACKET HAVE_PACKET_FANOUT LIBCAP_NG LIBNET1.1 HAVE_HTP_URI_NORMALIZE_HOOK PCRE_JIT HAVE_NSS HTTP2_DECOMPRESSION HAVE_LUA HAVE_LUAJIT HAVE_LIBJANSSON TLS TLS_C11 MAGIC RUST 
+SIMD support: SSE_4_2 SSE_4_1 SSE_3 
+13/11/2026 -- 08:34:24 - <Info> -- Ignoring file rules/emerging-deleted.rules
+13/11/2026 -- 08:34:35 - <Info> -- Loaded 69398 rules.
+13/11/2026 -- 08:34:35 - <Info> -- Disabled 14 rules.
+13/11/2026 -- 08:34:35 - <Info> -- Enabled 0 rules.
+13/11/2026 -- 08:34:35 - <Info> -- Modified 0 rules.
+13/11/2026 -- 08:34:35 - <Info> -- Dropped 0 rules.
+13/11/2026 -- 08:34:36 - <Info> -- Enabled 136 rules for flowbit dependencies.
+13/11/2026 -- 08:34:36 - <Info> -- Backing up current rules.
+13/11/2026 -- 08:34:36 - <Info> -- Writing rules to /var/lib/suricata/rules/suricata.rules: total: 69398; enabled: 53428; added: 69398; removed 0; modified: 0
+13/11/2026 -- 08:34:37 - <Info> -- Writing /var/lib/suricata/rules/classification.config
+13/11/2026 -- 08:34:38 - <Info> -- Testing with suricata -T.
+13/11/2026 -- 08:36:48 - <Info> -- Done.
+total 45076
+-rw-r--r-- 1 root root     3228 Nov 13 08:34 classification.config
+-rw-r--r-- 1 root root 46151720 Nov 13 08:34 suricata.rules
+53427

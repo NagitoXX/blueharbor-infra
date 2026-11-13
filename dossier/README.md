@@ -203,7 +203,76 @@ VBoxManage startvm <VM> --type headless
 - When the change is validated, delete the snapshot (`VBoxManage snapshot <VM> delete "<name>"`), so that long chains do not slow the disk.
 - **A snapshot is not a backup.** It sits on the same drive and depends on its whole chain of files. Real backups are covered in Lab 08.
 
+### Incident response (Lab 05)
+
+Detection in place on WEB01:
+
+- **Suricata IDS:** ET Open rules plus `local.rules`; alerts in `/var/log/suricata/fast.log` and `eve.json`.
+- **fail2ban:** bans SSH after 4 failures in 10 min, for 15 min; never bans 10.10.20.1.
+- **ufw logging:** `[UFW BLOCK]` lines in `/var/log/ufw.log` and the kernel journal.
+
+Worked example: [lab05/incident-report.md](../lab05/incident-report.md).
+
+**Who to call**
+
+| Role | Who | When |
+|------|-----|------|
+| On-call Linux / Windows administrator | IT team (`OU=IT`: sdurand, nmoreau, lsimon); first responder | Any alert, any `Ban` from an unknown or internal source |
+| Security officer (IT lead) | Decides isolation, keeps the timeline, writes the report | Severity medium or higher, or any internal host attacking another |
+| Management (CEO / Finance director) | Informed by the security officer | Data exposed, service down more than 1 hour, or ransomware |
+| CNIL (French data protection authority) | Notified by management, within **72 hours** (GDPR art. 33) | Personal data (customers, staff) breached |
+| Cloud providers (Vercel, Supabase, GitHub) | Through their support or security contact | A token leaked or a cloud account suspected |
+
+**Steps**
+
+1. **Do not reboot or clean anything yet.** Note the time (UTC), the alert and the source IP.
+2. **Contain, as little as needed:**
+   - ban the source IP (`fail2ban-client set sshd banip <ip>`, or a ufw rule);
+   - or isolate a compromised VM: `VBoxManage controlvm <VM> setlinkstate1 off`;
+   - take a snapshot of it first (`snapshot <VM> take "incident-<date>"`).
+3. **Collect evidence before it rotates**, as root, into a dated folder, then copy it off the server:
+
+   | Source | Command |
+   |--------|---------|
+   | IDS alerts | `tail -n 200 /var/log/suricata/fast.log`; `jq 'select(.event_type=="alert")' /var/log/suricata/eve.json` |
+   | Bans | `fail2ban-client status sshd`; `grep -E "Found|Ban" /var/log/fail2ban.log` |
+   | Logins | `journalctl -u ssh --since "-1 h"`; `last -20`; `grep sudo /var/log/auth.log` |
+   | Firewall | `grep "UFW BLOCK" /var/log/ufw.log` (or `journalctl -k`) |
+   | Web | `/var/log/nginx/access.log` and `error.log` |
+   | System state | `ss -tulpn`; `ps auxf`; `who`; recently changed files: `find /etc /usr/local -mtime -1` |
+   | Windows (DC01) | Security log 4624/4625/4740 (logons, failures, lockouts), `Get-NetTCPConnection`, firewall log |
+
+4. **Build the timeline:** UTC time, source, event, evidence file. All servers use NTP, so the times line up.
+5. **Eradicate:** rebuild a compromised server from the `base-hardened` template rather than cleaning it. Rotate its SSH host keys and any password or token it held.
+6. **Recover:** unban or reconnect, then check the service (`curl -I`, `systemctl is-active ...`). Watch the logs for 24 hours.
+7. **Report within 2 working days** using the structure of `lab05/incident-report.md`: summary, timeline, impact, detection, response, lessons, actions with owners. Add new risks to the register.
+
 ## Risks
+
+### Risk register and exposure (Lab 05)
+
+The full registers are kept with Lab 05, and this dossier keeps the summary. Both are reviewed after each lab and after each incident.
+
+- **[lab05/risk-register.md](../lab05/risk-register.md):** 8 assets rated for C/I/A, and the 5 main threats scored likelihood × impact, with existing and missing controls.
+- **[lab05/exposure.md](../lab05/exposure.md):** every port nmap found open on DC01 and WEB01, whether it is expected, who should reach it, and the action.
+
+| Rank | Asset | Threat | Risk (L × I) | Main control to add |
+|------|-------|--------|--------------|---------------------|
+| 1 | DC01 | Password spraying: all staff share one initial password | **16** | Unique initial passwords, disable unused accounts, MFA for admins |
+| 2 | Admin laptop / VirtualBox host | Malware or theft: SSH key without passphrase, unencrypted VM drive | **12** | Key passphrase, BitLocker, separate admin profile |
+| 3 | Finance share | Ransomware through phishing; no backup yet | **12** | Offline backups (Lab 08), shadow copies, EDR |
+| 4 | Switches and routers | Users reaching management VLAN 99, no `enable secret` | **9** | ACLs (done in Lab 05 on R-HQ and SW-ACC1), `enable secret` on all |
+| 5 | Cloud tokens | Token committed to Git | **8** | Secret scanning, scoped tokens with expiry |
+
+| Exposure found by nmap | Status |
+|------------------------|--------|
+| DC01: Print Spooler RPC reachable on a domain controller | **Closed** (spooler disabled, rescan clean) |
+| DC01: WinRM 5985 and ADWS 9389 open to the whole server network | To filter to the admin VLAN |
+| DC01: NetBIOS 139 | To close |
+| WEB01: SSH open to every server, not only admins | To filter |
+| Internal recon (incident drill): a SYN scan raises no alert | Detection rule to add, central logging (Lab 07) |
+
+### Earlier findings
 
 First entries, from the directory audit of Lab 02 ([lab02/audit.md](../lab02/audit.md)):
 
@@ -223,7 +292,7 @@ From the WEB01 hardening of Lab 03 (Lynis index 63 → 71). These Lynis suggesti
 | ACCT-9628 auditd, FINT-4350 file integrity, LOGG-2154 remote logging | Changes to system files and permissions go unnoticed; logs can be erased by an intruder | Each needs storage and a review routine; planned with central logging | Planned |
 | BOOT-5122: no GRUB password | Anyone with console access can boot in single-user mode | Console access already means access to the VirtualBox host; a GRUB password blocks unattended reboots | Accepted |
 | AUTH-9230/9262/9286: local password hashing, quality and ageing | Weak local passwords for sudo and the console | SSH accepts keys only; to be handled with central identity (AD) | Accepted |
-| DEB-0880: no fail2ban | Brute-force attempts are not banned | Password login is off and SSH only accepts the lab network | Accepted |
+| DEB-0880: no fail2ban | Brute-force attempts are not banned | Installed in Lab 05: SSH jail, 4 failures in 10 min → 15 min ban, tested ([lab05/ids.md](../lab05/ids.md)) | **Fixed** on WEB01 |
 | SSH-7408 `Port`: SSH stays on 22 | Port 22 is scanned first | Moving it only hides it; the firewall and key-only login protect it | Accepted |
 | KRNL-6000, NETW-3200, USB-1000: extra sysctl values, unused protocols, USB storage | Small extra attack surface in the kernel | Low risk on a VM without USB; next hardening pass | Planned |
 | No swap on WEB01 (Lab 03 USE report) | A memory peak ends in an OOM kill of nginx instead of a slowdown | Add a 1 GB swap file with low swappiness | Open |

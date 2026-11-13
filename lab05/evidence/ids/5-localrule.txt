@@ -1,0 +1,11 @@
+alert icmp any any -> $HOME_NET any (msg:"BH LAB ICMP echo to a server"; itype:8; sid:9000001; rev:1;)
+2152:rule-files:
+2153-  - suricata.rules
+2154-  - /etc/suricata/rules/local.rules
+2155-
+i: suricata: This is Suricata version 7.0.3 RELEASE running in SYSTEM mode
+i: suricata: Configuration provided was successfully loaded. Exiting.
+ENGINE-UP
+11/13/2026-08:52:30.876200  [**] [1:9000001:1] BH LAB ICMP echo to a server [**] [Classification: (null)] [Priority: 3] {ICMP} 10.10.20.21:8 -> 10.10.20.20:0
+11/13/2026-08:52:31.875058  [**] [1:9000001:1] BH LAB ICMP echo to a server [**] [Classification: (null)] [Priority: 3] {ICMP} 10.10.20.21:8 -> 10.10.20.20:0
+11/13/2026-08:52:32.880789  [**] [1:9000001:1] BH LAB ICMP echo to a server [**] [Classification: (null)] [Priority: 3] {ICMP} 10.10.20.21:8 -> 10.10.20.20:0

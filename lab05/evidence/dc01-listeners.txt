@@ -1,0 +1,54 @@
+Exercise 5.3 - DC01 listening TCP ports (13/11/2026), transcribed from the Administrator PowerShell console
+
+PS> Get-NetTCPConnection -State Listen | Where LocalAddress -notin "127.0.0.1","::1" |
+      Sort LocalPort -Unique | Select LocalPort, OwningProcess, @{n="Process";e={(Get-Process -Id $_.OwningProcess).ProcessName}}
+
+LocalPort OwningProcess Process
+--------- ------------- -------
+       53          3128 dns
+       88           792 lsass
+      135           432 svchost
+      139             4 System
+      389           792 lsass
+      445             4 System
+      464           792 lsass
+      593           432 svchost
+      636           792 lsass
+     3268           792 lsass
+     3269           792 lsass
+     5985             4 System
+     9389          3104 Microsoft.ActiveDirectory.WebServices
+    47001             4 System
+    49664           792 lsass
+    49665           652 wininit
+    49667           792 lsass
+    49668           792 lsass
+    49674          1840 svchost
+    49675          2236 spoolsv
+    49676          1508 svchost
+    49677           792 lsass
+    49698          3128 dns
+    49700           792 lsass
+    49715           776 services
+    49774          3144 dfsrs
+
+PS> Get-Service Spooler, WinRM, TermService
+Name        Status  StartType
+----        ------  ---------
+Spooler     Running Automatic
+TermService Stopped Manual
+WinRM       Running Automatic
+
+================ Fix: Print Spooler disabled
+PS> Stop-Service Spooler -Force; Set-Service Spooler -StartupType Disabled
+PS> Get-Service Spooler
+Name    Status  StartType
+----    ------  ---------
+Spooler Stopped Disabled
+
+PS> Get-NetTCPConnection -State Listen -LocalPort 49675 -ErrorAction SilentlyContinue | Measure
+Count
+-----
+    0
+
+Rescan from WEB02: see nmap/4-dc01-high-before.txt (49675/tcp open msrpc) and nmap/5-dc01-high-after.txt (49675 gone).

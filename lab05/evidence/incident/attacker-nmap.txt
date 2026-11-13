@@ -1,0 +1,10 @@
+# Nmap 7.94SVN scan initiated Fri Nov 13 09:24:33 2026 as: nmap -sS -T4 -oN /root/atk-nmap.txt 10.10.20.20
+Nmap scan report for web01.blueharbor.internal (10.10.20.20)
+Host is up (0.0024s latency).
+Not shown: 998 filtered tcp ports (no-response)
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:F0:D3:39 (Oracle VirtualBox virtual NIC)
+
+# Nmap done at Fri Nov 13 09:24:38 2026 -- 1 IP address (1 host up) scanned in 5.33 seconds

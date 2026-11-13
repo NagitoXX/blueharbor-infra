@@ -1,0 +1,8 @@
+2026-11-13T09:24:28Z 0 drill start on web02
+2026-11-13T09:24:33Z 1 SYN scan nmap -sS -T4 10.10.20.20
+2026-11-13T09:24:38Z 1 scan finished
+2026-11-13T09:26:06Z 2 HTTP request carrying uid=0(root)
+2026-11-13T09:27:14Z 3 SSH attempts with invalid users
+2026-11-13T09:27:21Z 3 SSH attempts finished
+2026-11-13T09:28:31Z 4 retry SSH and HTTP
+2026-11-13T09:28:31Z 5 drill end
