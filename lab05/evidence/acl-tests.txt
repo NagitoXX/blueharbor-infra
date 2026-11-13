@@ -1,0 +1,101 @@
+Exercise 5.2 - Packet Tracer tests on lab05/bh-hq-secured.pkt (13/11/2026)
+Transcribed from the Packet Tracer CLI and Command Prompt windows.
+
+================ R-HQ: ACL applied on the Users sub-interface
+R-HQ#show access-lists          (right after configuration, before any test)
+Extended IP access list USERS-IN
+    10 deny ip 10.10.30.0 0.0.0.255 10.10.10.0 0.0.0.255
+    20 deny ip 10.10.30.0 0.0.0.255 10.10.99.0 0.0.0.255
+    30 permit ip any any
+
+================ PC-U1 (VLAN 30 Users)
+C:\>ipconfig
+   IPv4 Address......................: 10.10.30.21
+   Subnet Mask.......................: 255.255.255.0
+   Default Gateway...................: 10.10.30.1
+
+C:\>ping 10.10.20.10                      (SRV-DC, server VLAN: must work)
+Request timed out.
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=127
+Reply from 10.10.20.10: bytes=32 time<1ms TTL=127
+    Packets: Sent = 4, Received = 3, Lost = 1 (25% loss),
+    (the first request is lost while R-HQ resolves the ARP entry)
+
+C:\>ping 10.10.10.21                      (PC-A1, Admin VLAN: must fail)
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+C:\>ping 10.10.99.12                      (SW-ACC1, Management VLAN: must fail)
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+Reply from 10.10.30.1: Destination host unreachable.
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss),
+
+================ R-HQ: hit counters after the tests
+R-HQ#show access-lists
+Extended IP access list USERS-IN
+    10 deny ip 10.10.30.0 0.0.0.255 10.10.10.0 0.0.0.255 (4 match(es))
+    20 deny ip 10.10.30.0 0.0.0.255 10.10.99.0 0.0.0.255 (4 match(es))
+    30 permit ip any any (4 match(es))
+
+R-HQ#show ip interface g0/0.30 | include access list
+  Outgoing access list is not set
+  Inbound  access list is USERS-IN
+
+R-HQ#copy running-config startup-config
+[OK]
+
+================ SW-ACC1: vty restricted to the Admin VLAN
+SW-ACC1#show running-config | section line vty      (before)
+line vty 0 4
+ login local
+ transport input ssh
+line vty 5 15
+ login
+
+SW-ACC1(config)#access-list 10 permit 10.10.10.0 0.0.0.255
+SW-ACC1(config)#line vty 0 4
+SW-ACC1(config-line)# access-class 10 in
+
+SW-ACC1#show running-config | section line vty      (after)
+line vty 0 4
+ access-class 10 in
+ login local
+ transport input ssh
+line vty 5 15
+ login
+
+SW-ACC1#show running-config | include hostname|secret|username|ip ssh|ip domain-name|service password
+no service password-encryption
+hostname SW-ACC1
+ip ssh version 2
+ip domain-name blueharbor.internal
+username netadmin secret 5 <redacted>
+(no "enable secret" line)
+
+SW-ACC1#show ip ssh
+SSH Enabled - version 2.0
+Authentication timeout: 120 secs; Authentication retries: 3
+
+SW-ACC1#copy running-config startup-config
+[OK]
+
+================ SSH tests to SW-ACC1 (10.10.99.12)
+SRV-DC (10.10.20.10, server VLAN, not filtered by R-HQ):
+C:\>ping 10.10.99.12
+Reply from 10.10.99.12: bytes=32 time=9ms TTL=254       (2 of 4, first two lost to ARP)
+C:\>ssh -l netadmin 10.10.99.12
+[Connection to 10.10.99.12 closed by foreign host]      <- refused by access-class 10
+
+PC-A1 (10.10.10.21, Admin VLAN):
+C:\>ssh -l netadmin 10.10.99.12
+Password:                                               <- accepted by access-class 10 (cancelled, no password typed)
+
+SW-ACC1#show access-lists
+Standard IP access list 10
+    10 permit 10.10.10.0 0.0.0.255 (2 match(es))
