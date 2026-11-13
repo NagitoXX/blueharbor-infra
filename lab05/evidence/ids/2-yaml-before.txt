@@ -1,0 +1,22 @@
+18:    HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+19:    #HOME_NET: "[192.168.0.0/16]"
+20:    #HOME_NET: "[10.0.0.0/8]"
+21:    #HOME_NET: "[172.16.0.0/12]"
+22:    #HOME_NET: "any"
+614:af-packet:
+615-  - interface: eth0
+616-    # Number of receive threads. "auto" uses the number of cores
+617-    #threads: auto
+2150:default-rule-path: /var/lib/suricata/rules
+2151-
+2152-rule-files:
+2153-  - suricata.rules
+2154-
+ExecStart=/usr/bin/suricata -D --af-packet -c /etc/suricata/suricata.yaml --pidfile /run/suricata.pid
+RUN=no
+SURCONF=/etc/suricata/suricata.yaml
+LISTENMODE=nfqueue
+IFACE=eth0
+NFQUEUE=0
+TCMALLOC="YES"
+PIDFILE=/var/run/suricata.pid

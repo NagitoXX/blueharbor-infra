@@ -1,0 +1,19 @@
+# Nmap 7.94SVN scan initiated Fri Nov 13 08:27:18 2026 as: nmap -sS -sV -T4 -p 5985,9389,47001,49664-49800 -oN /tmp/scan/5-dc01-high-after.txt 10.10.20.10
+Nmap scan report for DC01.blueharbor.internal (10.10.20.10)
+Host is up (0.0028s latency).
+Not shown: 131 filtered tcp ports (no-response)
+PORT      STATE SERVICE    VERSION
+5985/tcp  open  http       Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+9389/tcp  open  mc-nmf     .NET Message Framing
+49664/tcp open  msrpc      Microsoft Windows RPC
+49667/tcp open  msrpc      Microsoft Windows RPC
+49668/tcp open  ncacn_http Microsoft Windows RPC over HTTP 1.0
+49677/tcp open  msrpc      Microsoft Windows RPC
+49698/tcp open  msrpc      Microsoft Windows RPC
+49700/tcp open  msrpc      Microsoft Windows RPC
+49774/tcp open  msrpc      Microsoft Windows RPC
+MAC Address: 08:00:27:CB:38:FD (Oracle VirtualBox virtual NIC)
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Nov 13 08:28:16 2026 -- 1 IP address (1 host up) scanned in 58.12 seconds

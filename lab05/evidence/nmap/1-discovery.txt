@@ -1,0 +1,13 @@
+# Nmap 7.94SVN scan initiated Fri Nov 13 08:21:05 2026 as: nmap -sn -oN /tmp/scan/1-discovery.txt 10.10.20.0/24
+Nmap scan report for _gateway (10.10.20.1)
+Host is up (0.0033s latency).
+MAC Address: 52:55:0A:0A:14:01 (Unknown)
+Nmap scan report for DC01.blueharbor.internal (10.10.20.10)
+Host is up (0.0030s latency).
+MAC Address: 08:00:27:CB:38:FD (Oracle VirtualBox virtual NIC)
+Nmap scan report for web01.blueharbor.internal (10.10.20.20)
+Host is up (0.0038s latency).
+MAC Address: 08:00:27:F0:D3:39 (Oracle VirtualBox virtual NIC)
+Nmap scan report for web02 (10.10.20.21)
+Host is up.
+# Nmap done at Fri Nov 13 08:21:08 2026 -- 256 IP addresses (4 hosts up) scanned in 2.54 seconds

@@ -1,0 +1,27 @@
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Fail2Ban v1.0.2
+[DEFAULT]
+banaction = nftables
+banaction_allports = nftables[type=allports]
+backend = systemd
+
+[sshd]
+enabled = true
+==== /etc/fail2ban/jail.d/sshd.local
+[sshd]
+enabled = true
+maxretry = 4
+findtime = 10m
+bantime = 15m
+ignoreip = 127.0.0.1/8 ::1 10.10.20.1
+active
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed:	0
+|  |- Total failed:	0
+|  `- Journal matches:	_SYSTEMD_UNIT=sshd.service + _COMM=sshd
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	0
+   `- Banned IP list:	

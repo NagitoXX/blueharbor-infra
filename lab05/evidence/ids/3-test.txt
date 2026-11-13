@@ -1,0 +1,30 @@
+Notice: suricata: This is Suricata version 7.0.3 RELEASE running in SYSTEM mode
+Info: cpu: CPUs/cores online: 2
+Info: suricata: Running suricata under test mode
+Info: suricata: Setting engine mode to IDS mode by default
+Info: exception-policy: master exception-policy set to: auto
+Info: logopenfile: fast output device (regular) initialized: fast.log
+Info: logopenfile: eve-log output device (regular) initialized: eve.json
+Info: logopenfile: stats output device (regular) initialized: stats.log
+Info: detect: 1 rule files processed. 53428 rules successfully loaded, 0 rules failed, 0
+Info: threshold-config: Threshold config parsed: 0 rule(s) found
+Info: detect: 53433 signatures processed. 1257 are IP-only rules, 4533 are inspecting packet payload, 47410 inspect application layer, 108 are decoder event only
+Notice: suricata: Configuration provided was successfully loaded. Exiting.
+exit=0
+● suricata.service - Suricata IDS/IDP daemon
+     Loaded: loaded (/usr/lib/systemd/system/suricata.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-11-13 08:40:30 UTC; 5s ago
+       Docs: man:suricata(8)
+             man:suricatasc(8)
+             https://suricata.io/documentation/
+    Process: 5753 ExecStart=/usr/bin/suricata -D --af-packet -c /etc/suricata/suricata.yaml --pidfile /run/suricata.pid (code=exited, status=0/SUCCESS)
+   Main PID: 5754 (Suricata-Main)
+      Tasks: 1 (limit: 2263)
+     Memory: 57.9M (peak: 57.9M)
+        CPU: 5.370s
+     CGroup: /system.slice/suricata.service
+             └─5754 /usr/bin/suricata -D --af-packet -c /etc/suricata/suricata.yaml --pidfile /run/suricata.pid
+
+Nov 13 08:40:29 web01 systemd[1]: Starting suricata.service - Suricata IDS/IDP daemon...
+Nov 13 08:40:29 web01 suricata[5753]: i: suricata: This is Suricata version 7.0.3 RELEASE running in SYSTEM mode
+Nov 13 08:40:30 web01 systemd[1]: Started suricata.service - Suricata IDS/IDP daemon.

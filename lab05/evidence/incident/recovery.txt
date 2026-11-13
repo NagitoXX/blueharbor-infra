@@ -1,0 +1,16 @@
+2026-11-13T09:30:31Z
+1
+Status for the jail: sshd
+|- Filter
+|  |- Currently failed:	1
+|  |- Total failed:	10
+|  `- Journal matches:	_SYSTEMD_UNIT=sshd.service + _COMM=sshd
+`- Actions
+   |- Currently banned:	0
+   |- Total banned:	2
+   `- Banned IP list:	
+HTTP/1.1 200 OK
+active
+active
+active
+active

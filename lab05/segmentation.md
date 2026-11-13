@@ -81,7 +81,7 @@ Default: deny (incoming), allow (outgoing), disabled (routed)
 There are 3 lines, at 08:13:17, :21 and :30: Windows retried the SYN, waiting longer each time.
 
 - The `low` level logs blocked packets, plus allowed packets that do not match any rule.
-- The lines go to the kernel journal (`journalctl -k | grep "UFW BLOCK"`): `/var/log/ufw.log` does not exist on WEB01 because rsyslog is not installed.
+- The lines go to the kernel journal (`journalctl -k | grep "UFW BLOCK"`). rsyslog also copies them to `/var/log/ufw.log` and `/var/log/syslog`. `ufw.log` only appears with the first blocked packet after logging is enabled.
 - These lines are what an IDS or fail2ban can read in the next exercises.
 
 ### DC01: Windows Defender Firewall
