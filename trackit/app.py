@@ -2,7 +2,7 @@ import json, os, socket, urllib.parse, urllib.request
 from flask import Flask, jsonify
 
 app = Flask(__name__)
-VERSION = os.getenv("APP_VERSION", "1.0.0")
+VERSION = os.getenv("APP_VERSION", "1.0.1")
 cache = None
 if os.getenv("REDIS_HOST"):
     import redis
