@@ -6,7 +6,9 @@ terraform {
   }
 }
 
-provider "vercel" {} # reads VERCEL_API_TOKEN
+provider "vercel" {
+  team = "blueharbor-infra" # token comes from VERCEL_API_TOKEN
+}
 
 variable "github_repo" {
   type        = string
@@ -20,6 +22,7 @@ variable "initials" {
 resource "vercel_project" "trackit" {
   name           = "bh-trackit-${var.initials}"
   root_directory = "trackit"
+  framework      = "flask"
   git_repository = {
     type              = "github"
     repo              = var.github_repo
