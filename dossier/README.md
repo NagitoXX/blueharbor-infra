@@ -83,6 +83,40 @@ The servers run as VirtualBox 7.2 VMs on one laptop (i7-13620H, 16 threads, 16 G
 
 Storage traffic stays on `BH-STORAGE`, so it does not compete with client traffic and storage cannot be reached from outside the servers ([lab04/networks.md](../lab04/networks.md)).
 
+### Cloud view (Lab 06)
+
+```
+ Admin laptop ── browser ──> GitHub Codespace (Terraform, git, tests)
+                                 │ secrets: VERCEL_API_TOKEN, SUPABASE_ACCESS_TOKEN (Codespaces secrets)
+                                 │ terraform apply (cloud/platform/main.tf)
+                 ┌───────────────┴────────────────┐
+                 v                                v
+      Vercel project bh-trackit-he         Supabase project bh-trackit-dev
+      (PaaS, Flask, root dir trackit)      (DBaaS Postgres, Paris eu-west-3)
+      env: APP_VERSION, SUPABASE_URL,      table public.shipments, RLS:
+           SUPABASE_KEY (sensitive)        anon may SELECT only
+                 ^
+  git push main ─┘ (Vercel GitHub app, access limited to blueharbor-infra)
+```
+
+| Component | Where | Managed by |
+|---|---|---|
+| Source code, Terraform, docs | GitHub NagitoXX/blueharbor-infra | Git |
+| Dev environment | GitHub Codespace (2-core) | GitHub |
+| TrackIt web app | Vercel, https://bh-trackit-he.vercel.app | Terraform (`vercel_project`) + git push |
+| Shipment data | Supabase, project ref jcphtwpypvajkkrfmugd, Paris | Terraform (`supabase_project`) + cloud/platform/schema.sql |
+| Terraform state | Codespace only (`terraform.tfstate`, not in Git) | Terraform |
+
+Flow of a TrackIt request (`GET /api/shipments/BH-1002`):
+
+1. The browser resolves bh-trackit-he.vercel.app and opens HTTPS to the nearest Vercel point of presence (TLS by Vercel).
+2. Vercel routes the request to the Flask function (`trackit/app.py`), which reads `SUPABASE_URL` and `SUPABASE_KEY` from its environment.
+3. The function calls `https://<ref>.supabase.co/rest/v1/shipments?id=eq.BH-1002` with the public (publishable) key in the `apikey` header.
+4. Supabase's REST API runs the query as role `anon`; row level security allows SELECT only.
+5. The row comes back as JSON; Flask returns it with 200, or `{"error":"not found"}` with 404.
+
+Note: Vercel functions run in `iad1` (Washington) by default while the database is in Paris; pin them to `cdg1` to cut latency and keep processing in the EU.
+
 ## Operations
 
 ### Create a user
@@ -247,6 +281,32 @@ Worked example: [lab05/incident-report.md](../lab05/incident-report.md).
 6. **Recover:** unban or reconnect, then check the service (`curl -I`, `systemctl is-active ...`). Watch the logs for 24 hours.
 7. **Report within 2 working days** using the structure of `lab05/incident-report.md`: summary, timeline, impact, detection, response, lessons, actions with owners. Add new risks to the register.
 
+### Deploy TrackIt (Lab 06)
+
+1. Start the Codespace, `git pull`, change the code in `trackit/`.
+2. Test: `cd trackit && python -m pytest -q` (in a venv: `python3 -m venv ~/.venvs/trackit && . ~/.venvs/trackit/bin/activate && pip install -r requirements.txt pytest`).
+3. For a preview: push a branch; Vercel builds a protected preview URL (sign in to open it).
+4. For production: merge or push to `main`; Vercel builds and promotes it. Check Vercel > bh-trackit-he > Deployments, then `curl https://bh-trackit-he.vercel.app/health`.
+5. Rollback: in Vercel > Deployments, promote the previous Ready deployment, then fix forward in Git.
+6. Stop the Codespace when done (github.com/codespaces > ... > Stop codespace).
+
+### Change a setting (Lab 06)
+
+Never change Vercel or Supabase settings by hand: change `cloud/platform/main.tf`, then:
+
+```bash
+cd /workspaces/blueharbor-infra/cloud/platform
+export TF_VAR_db_password="$(cat ~/.bh-db-password)"
+export TF_VAR_supabase_key="$(cat ~/.bh-sb-key)"
+V="-var github_repo=NagitoXX/blueharbor-infra -var initials=he -var supabase_org=ywayjhdotjcjnnkbctys"
+terraform plan  $V    # read it
+terraform apply $V
+```
+
+Environment variables only reach new deployments: push a commit or Redeploy. Database schema changes go in `cloud/platform/schema.sql` and are run in the Supabase SQL Editor. Commit `main.tf` and `.terraform.lock.hcl`, never the state or a key.
+
+Rotate a token (leak or expiry): create the new one (Vercel > Account > Tokens, Supabase > Account > Access Tokens), update the Codespaces secret, restart the Codespace, then revoke the old one.
+
 ## Risks
 
 ### Risk register and exposure (Lab 05)
@@ -308,3 +368,15 @@ Capacity limits of the virtualisation host (Lab 04, [lab04/capacity.md](../lab04
 | **Single host, single drive**: every VM, snapshot and linked-clone base is on one laptop and one USB drive | WEB02 depends on WEB01's disk chain | Loss or failure of the drive or laptop loses the whole lab, snapshots included | Export the template (`VBoxManage export`) to another disk; real backups (Lab 08) | Open |
 | **No swap in the Linux VMs** | Lab 04: `stress-ng --vm 1200M` on WEB02 (961 MB) was refused at once, `si`/`so` = 0 | A VM given less RAM than its workload fails instead of slowing down | Size RAM on measured working sets; add a small swap file | Open |
 | **CPU**: 6 vCPU on 16 threads (0.38 : 1) | Lab 04: 1 → 2 vCPU gave × 4.5 on a parallel load; CPU cap 50 % only removed 13 % | No risk today | Keep vCPU ≤ host threads; no CPU cap as a sizing tool | OK |
+
+### Cloud risks (Lab 06)
+
+| Risk | Evidence | Impact | Control | Status |
+|---|---|---|---|---|
+| Token leakage (Vercel / Supabase / GitHub) | A Vercel token was pasted in a chat during Lab 06 | Anyone holding it can change or delete the projects | Tokens only in Codespaces secrets, 30-day expiry, scoped Supabase token; revoke at once if exposed; secret scan before each commit | Leaked token revoked and replaced |
+| Supabase project paused | Free plan pauses after 1 week without activity | TrackIt API fails (500) until the project is restored | Restore from the dashboard; Supabase Pro ($25/month) for production | Accepted (lab) |
+| Free quotas exceeded | Hobby caps cannot be raised; Supabase Free 500 MB, 5 GB egress | Features blocked until next cycle | Usage noted in lab06/usage.md, check monthly | OK today (< 5 %) |
+| Codespace left running | Billed per hour beyond 120 core-hours | Unexpected cost | Stop after each session; idle timeout 30 min | OK |
+| Terraform state holds secrets | State contains the DB password and the Supabase key in clear | Leak if committed or the Codespace is shared | `*.tfstate` in .gitignore; remote encrypted backend later | Open |
+| US jurisdiction of Vercel and Supabase | Both are US companies (lab06/providers.md) | Customer data reachable under US law | EU regions, minimal personal data; OVHcloud for sensitive data | Accepted |
+| Functions far from the database | Vercel functions default to Washington, DB in Paris | Latency, processing outside the EU | Set the function region to cdg1 | Open |
