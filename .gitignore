@@ -5,3 +5,4 @@
 .env
 __pycache__/
 .pytest_cache/
+crash.log
