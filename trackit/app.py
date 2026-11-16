@@ -22,7 +22,7 @@ def fetch_shipment(sid):
 @app.get("/")
 def index():
     visits = cache.incr("visits") if cache else "n/a"
-    return (f"<h1>BlueHarbor TrackIt</h1><p>Version {VERSION} served by "
+    return (f"<h1>BlueHarbor TrackIt - shipment tracking</h1><p>Version {VERSION} served by "
             f"{socket.gethostname()} - visits: {visits}</p>")
 
 
