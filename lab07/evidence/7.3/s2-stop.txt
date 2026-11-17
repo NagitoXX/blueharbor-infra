@@ -1,0 +1,4 @@
+== 10:00:29Z 2 simulate failure: stop nginx on web02
+[sudo] password for opsadmin: 
+Connection to 10.10.20.21 closed.
+inactive

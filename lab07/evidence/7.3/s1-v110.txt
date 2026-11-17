@@ -1,0 +1,40 @@
+== 09:58:31Z 1 rolling update to 1.1.0
+
+PLAY [Rolling update of the status page] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+
+TASK [Deploy the new version] **************************************************
+changed: [web01]
+
+TASK [Health check from the control node] **************************************
+ok: [web01 -> localhost]
+
+TASK [Verify the version is served] ********************************************
+ok: [web01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY [Rolling update of the status page] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web02]
+
+TASK [Deploy the new version] **************************************************
+changed: [web02]
+
+TASK [Health check from the control node] **************************************
+ok: [web02 -> localhost]
+
+TASK [Verify the version is served] ********************************************
+ok: [web02] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY RECAP *********************************************************************
+web01                      : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

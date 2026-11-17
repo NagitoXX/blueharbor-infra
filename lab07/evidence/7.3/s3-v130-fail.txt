@@ -1,0 +1,39 @@
+== 10:00:52Z 3 rolling update to 1.3.0 with web02 down
+
+PLAY [Rolling update of the status page] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+
+TASK [Deploy the new version] **************************************************
+changed: [web01]
+
+TASK [Health check from the control node] **************************************
+ok: [web01 -> localhost]
+
+TASK [Verify the version is served] ********************************************
+ok: [web01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY [Rolling update of the status page] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web02]
+
+TASK [Deploy the new version] **************************************************
+changed: [web02]
+
+TASK [Health check from the control node] **************************************
+fatal: [web02 -> localhost]: FAILED! => {"changed": false, "content": "", "elapsed": 0, "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [Errno 111] Connection refused>", "redirected": false, "status": -1, "url": "http://10.10.20.21/"}
+
+NO MORE HOSTS LEFT *************************************************************
+
+NO MORE HOSTS LEFT *************************************************************
+
+PLAY RECAP *********************************************************************
+web01                      : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=2    changed=1    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+exit code: 2

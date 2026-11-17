@@ -1,0 +1,23 @@
+- name: Rolling update of the status page
+  hosts: web
+  become: true
+  serial: 1
+  max_fail_percentage: 0
+  vars:
+    trackit_version: "1.1.0"
+  tasks:
+    - name: Deploy the new version
+      ansible.builtin.template:
+        src: roles/webserver/templates/index.html.j2
+        dest: /var/www/html/index.html
+        mode: "0644"
+    - name: Health check from the control node
+      ansible.builtin.uri:
+        url: "http://{{ ansible_host }}/"
+        return_content: true
+      register: page
+      delegate_to: localhost
+      become: false
+    - name: Verify the version is served
+      ansible.builtin.assert:
+        that: "'version ' ~ trackit_version in page.content"

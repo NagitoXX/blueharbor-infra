@@ -1,0 +1,6 @@
+$ curl http://10.10.20.20
+<h1>BlueHarbor TrackIt status</h1>
+<p>Host: web01 - version 1.3.0 - managed by Ansible</p>
+$ curl http://10.10.20.21
+<h1>BlueHarbor TrackIt status</h1>
+<p>Host: web02 - version 1.3.0 - managed by Ansible</p>

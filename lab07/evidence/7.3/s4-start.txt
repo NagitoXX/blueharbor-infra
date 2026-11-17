@@ -1,0 +1,4 @@
+== 10:01:18Z 4 restart nginx on web02
+[sudo] password for opsadmin: 
+Connection to 10.10.20.21 closed.
+active
