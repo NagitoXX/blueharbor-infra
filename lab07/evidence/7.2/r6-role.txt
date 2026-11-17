@@ -1,0 +1,27 @@
+
+PLAY [web] *********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+ok: [web02]
+
+TASK [webserver : Install packages] ********************************************
+ok: [web01]
+ok: [web02]
+
+TASK [webserver : Deploy the status page] **************************************
+ok: [web01]
+ok: [web02]
+
+TASK [webserver : Allow node_exporter from the monitoring host only] ***********
+ok: [web01]
+ok: [web02]
+
+TASK [webserver : Ensure nginx is running] *************************************
+ok: [web01]
+ok: [web02]
+
+PLAY RECAP *********************************************************************
+web01                      : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=5    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

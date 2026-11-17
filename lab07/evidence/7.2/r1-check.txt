@@ -1,0 +1,74 @@
+
+PLAY [Configure the BlueHarbor web tier] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+ok: [web02]
+
+TASK [Install packages] ********************************************************
+The following additional packages will be installed:
+  freeipmi-common ipmitool libfreeipmi17 libio-pty-perl libipc-run-perl
+  libopenipmi0t64 libsnmp-base libsnmp40t64 libtime-duration-perl moreutils
+  nvme-cli openipmi prometheus-node-exporter-collectors python3-decorator
+  python3-prometheus-client smartmontools
+Suggested packages:
+  freeipmi-tools snmp-mibs-downloader gsmartcontrol smart-notifier mailx
+  | mailutils
+The following NEW packages will be installed:
+  freeipmi-common ipmitool libfreeipmi17 libio-pty-perl libipc-run-perl
+  libopenipmi0t64 libsnmp-base libsnmp40t64 libtime-duration-perl moreutils
+  nvme-cli openipmi prometheus-node-exporter
+  prometheus-node-exporter-collectors python3-decorator
+  python3-prometheus-client smartmontools
+0 upgraded, 17 newly installed, 0 to remove and 10 not upgraded.
+changed: [web01]
+The following additional packages will be installed:
+  freeipmi-common ipmitool libfreeipmi17 libio-pty-perl libipc-run-perl
+  libopenipmi0t64 libsnmp-base libsnmp40t64 libtime-duration-perl
+  libtimedate-perl moreutils nvme-cli openipmi
+  prometheus-node-exporter-collectors python3-decorator
+  python3-prometheus-client smartmontools
+Suggested packages:
+  freeipmi-tools snmp-mibs-downloader gsmartcontrol smart-notifier mailx
+  | mailutils
+The following NEW packages will be installed:
+  freeipmi-common ipmitool libfreeipmi17 libio-pty-perl libipc-run-perl
+  libopenipmi0t64 libsnmp-base libsnmp40t64 libtime-duration-perl
+  libtimedate-perl moreutils nvme-cli openipmi prometheus-node-exporter
+  prometheus-node-exporter-collectors python3-decorator
+  python3-prometheus-client smartmontools
+0 upgraded, 18 newly installed, 0 to remove and 2 not upgraded.
+changed: [web02]
+
+TASK [Deploy the status page] **************************************************
+--- before
++++ after: /home/opsadmin/.ansible/tmp/ansible-local-47655d4o5xpg/tmpqj62c5qw/index.html.j2
+@@ -0,0 +1,2 @@
++<h1>BlueHarbor TrackIt status</h1>
++<p>Host: web01 - version 1.0.0 - managed by Ansible</p>
+
+changed: [web01]
+--- before
++++ after: /home/opsadmin/.ansible/tmp/ansible-local-47655d4o5xpg/tmp_jxo3odb/index.html.j2
+@@ -0,0 +1,2 @@
++<h1>BlueHarbor TrackIt status</h1>
++<p>Host: web02 - version 1.0.0 - managed by Ansible</p>
+
+changed: [web02]
+
+TASK [Allow node_exporter from WEB01 only] *************************************
+changed: [web01]
+changed: [web02]
+
+TASK [Ensure nginx is running] *************************************************
+ok: [web01]
+ok: [web02]
+
+RUNNING HANDLER [Reload nginx] *************************************************
+changed: [web01]
+changed: [web02]
+
+PLAY RECAP *********************************************************************
+web01                      : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

@@ -1,0 +1,5 @@
+---
+# Version shown on the status page; override with -e trackit_version=...
+trackit_version: "1.0.1"
+# Only this host may scrape node_exporter (the Prometheus server)
+node_exporter_allowed_from: 10.10.20.20

@@ -1,0 +1,18 @@
+$ curl http://10.10.20.20 ; curl http://10.10.20.21
+<h1>BlueHarbor TrackIt status</h1>
+<p>Host: web01 - version 1.0.1 - managed by Ansible</p>
+<h1>BlueHarbor TrackIt status</h1>
+<p>Host: web02 - version 1.0.1 - managed by Ansible</p>
+
+$ curl -s http://10.10.20.21:9100/metrics | grep -c ^node_   (from WEB01, allowed)
+1556
+$ ansible web -a "systemctl is-active nginx prometheus-node-exporter"
+web01 | CHANGED | rc=0 >>
+active
+active
+web02 | CHANGED | rc=0 >>
+active
+active
+$ (on WEB02) curl --max-time 5 -w "%{http_code}" http://10.10.20.20:9100/metrics   (WEB02 is not allowed by ufw)
+000
+blocked (timeout)

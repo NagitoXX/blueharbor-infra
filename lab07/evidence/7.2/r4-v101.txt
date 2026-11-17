@@ -1,0 +1,26 @@
+
+PLAY [Configure the BlueHarbor web tier] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+fatal: [web02]: FAILED! => {"msg": "Incorrect sudo password"}
+
+TASK [Install packages] ********************************************************
+ok: [web01]
+
+TASK [Deploy the status page] **************************************************
+changed: [web01]
+
+TASK [Allow node_exporter from WEB01 only] *************************************
+ok: [web01]
+
+TASK [Ensure nginx is running] *************************************************
+ok: [web01]
+
+RUNNING HANDLER [Reload nginx] *************************************************
+changed: [web01]
+
+PLAY RECAP *********************************************************************
+web01                      : ok=6    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
