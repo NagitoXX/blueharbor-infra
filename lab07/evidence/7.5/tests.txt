@@ -1,0 +1,81 @@
+
+== 13:06:25Z collector listening on 514
+LISTEN 0      25           0.0.0.0:514       0.0.0.0:*    users:(("rsyslogd",pid=28413,fd=6))                                             
+LISTEN 0      25              [::]:514          [::]:*    users:(("rsyslogd",pid=28413,fd=7))                                             
+
+== 13:06:25Z 3. test message from web02
+total 4
+drwx------ 2 syslog syslog 4096 Nov 17 13:06 web02
+
+bhtest.log
+kernel.log
+rsyslogd.log
+sshd.log
+sudo.log
+systemd.log
+systemd-logind.log
+
+2026-11-17T13:06:26+00:00 web02 bhtest: hello from web02
+
+== 13:06:29Z 4. stop rsyslog on the collector
+inactive
+inactive
+
+== 13:06:29Z sent queued message 1
+
+== 13:06:49Z sent queued message 2
+
+== 13:07:10Z sent queued message 3
+
+== 13:07:30Z file while the collector is stopped (no queued message yet)
+2026-11-17T13:06:26+00:00 web02 bhtest: hello from web02
+
+== 13:07:30Z restart rsyslog on the collector
+active
+active
+
+== 13:07:55Z file after restart
+2026-11-17T13:06:26+00:00 web02 bhtest: hello from web02
+
+== 13:07:55Z extra data for the searches: 3 failed SSH logins on web02, one sudo on web02
+
+== 13:08:01Z 5a. failed SSH logins, all hosts (central) + local
+2026-11-17T13:07:55+00:00 web02 sshd[12642]: Invalid user admin from 10.10.20.20 port 58252
+2026-11-17T13:07:55+00:00 web02 sshd[12644]: Invalid user test from 10.10.20.20 port 58258
+2026-11-17T13:07:55+00:00 web02 sshd[12646]: Invalid user oracle from 10.10.20.20 port 58262
+-- local (web01):
+
+== 13:08:01Z 5b. bh-health warnings
+-- local:
+-- No entries --
+
+== 13:08:01Z 5c. sudo usage
+-- local:
+Nov 17 13:07:55 web01 sudo[28532]:     root : TTY=pts/0 ; PWD=/home/haytam ; USER=opsadmin ; COMMAND=/usr/bin/ssh -o BatchMode=yes -o StrictHostKeyChecking=no admin@10.10.20.21 true
+Nov 17 13:07:55 web01 sudo[28535]:     root : TTY=pts/0 ; PWD=/home/haytam ; USER=opsadmin ; COMMAND=/usr/bin/ssh -o BatchMode=yes -o StrictHostKeyChecking=no test@10.10.20.21 true
+Nov 17 13:07:55 web01 sudo[28538]:     root : TTY=pts/0 ; PWD=/home/haytam ; USER=opsadmin ; COMMAND=/usr/bin/ssh -o BatchMode=yes -o StrictHostKeyChecking=no oracle@10.10.20.21 true
+
+== 13:08:01Z files per host and program
+/var/log/remote/web02/bhtest.log
+/var/log/remote/web02/kernel.log
+/var/log/remote/web02/rsyslogd.log
+/var/log/remote/web02/sshd.log
+/var/log/remote/web02/sudo.log
+/var/log/remote/web02/systemd.log
+/var/log/remote/web02/systemd-logind.log
+
+== 13:08:01Z done
+
+== 13:08:39Z (later check, on the WEB01 console) sudo cat /var/log/remote/web02/bhtest.log
+2026-11-17T13:06:26+00:00 web02 bhtest: hello from web02
+2026-11-17T13:06:29+00:00 web02 bhtest: queued message 1, sent while the collector is down
+2026-11-17T13:06:49+00:00 web02 bhtest: queued message 2, sent while the collector is down
+2026-11-17T13:07:10+00:00 web02 bhtest: queued message 3, sent while the collector is down
+
+== sudo tail -5 /var/log/remote/web02/rsyslogd.log
+2026-11-17T13:06:29+00:00 web02 rsyslogd[12426]: rsyslogd: cannot connect to 10.10.20.20:514: Connection refused [v8.2312.0 try https://www.rsyslog.com/e/2027 ]
+2026-11-17T13:06:59+00:00 web02 rsyslogd[12426]: rsyslogd: cannot connect to 10.10.20.20:514: Connection refused [v8.2312.0 try https://www.rsyslog.com/e/2027 ]
+2026-11-17T13:07:29+00:00 web02 rsyslogd[12426]: rsyslogd: cannot connect to 10.10.20.20:514: Connection refused [v8.2312.0 try https://www.rsyslog.com/e/2027 ]
+2026-11-17T13:07:59+00:00 web02 rsyslogd:  message repeated 2 times: [cannot connect to 10.10.20.20:514: Connection refused [v8.2312.0 try https://www.rsyslog.com/e/2027 ]]
+2026-11-17T13:07:59+00:00 web02 rsyslogd: action 'action-8-builtin:omfwd' resumed (module 'builtin:omfwd') [v8.2312.0 try https://www.rsyslog.com/e/2359 ]
+(transcribed from the console screenshot queued-messages-arrived.png)

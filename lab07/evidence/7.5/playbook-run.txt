@@ -1,0 +1,39 @@
+
+PLAY [Log collector] ***********************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web01]
+
+TASK [Directory for remote logs] ***********************************************
+changed: [web01]
+
+TASK [Receive syslog over TCP 514, one file per host and program] **************
+changed: [web01]
+
+TASK [Check the whole rsyslog configuration] ***********************************
+ok: [web01]
+
+TASK [Allow syslog from the server network only] *******************************
+changed: [web01]
+
+RUNNING HANDLER [Restart rsyslog] **********************************************
+changed: [web01]
+
+PLAY [Log senders] *************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web02]
+
+TASK [Forward all messages to the collector, queued in memory while it is down] ***
+changed: [web02]
+
+TASK [Check the whole rsyslog configuration] ***********************************
+ok: [web02]
+
+RUNNING HANDLER [Restart rsyslog] **********************************************
+changed: [web02]
+
+PLAY RECAP *********************************************************************
+web01                      : ok=6    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+web02                      : ok=4    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+

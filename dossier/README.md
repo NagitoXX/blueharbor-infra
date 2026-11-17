@@ -117,6 +117,34 @@ Flow of a TrackIt request (`GET /api/shipments/BH-1002`):
 
 Note: Vercel functions run in `iad1` (Washington) by default while the database is in Paris; pin them to `cdg1` to cut latency and keep processing in the EU.
 
+### Automation, monitoring and logging (Lab 07)
+
+WEB01 is the control node and the monitoring and log collector of the lab:
+
+```
+                      Admin laptop
+            ssh -L 3000 -L 9090 (opsadmin only)  │  ssh 127.0.0.1:2220 / 2221
+                                                 v
+  ┌───────────────────────── WEB01 10.10.20.20 ─────────────────────────┐
+  │ Ansible (~/ansible) ──SSH 22──────────────────────────────> WEB02   │
+  │ Prometheus :9090 ──scrape every 15 s──> node_exporter :9100 on      │
+  │                                         WEB01 and WEB02             │
+  │ Grafana :3000 ──reads──> Prometheus (dashboards, CPU alert)         │
+  │ rsyslog :514/tcp <──all syslog, TCP, queued if WEB01 is down── WEB02│
+  │   -> /var/log/remote/<host>/<program>.log                           │
+  └─────────────────────────────────────────────────────────────────────┘
+```
+
+| Flow | From → to | Port | Allowed by |
+|------|-----------|------|------------|
+| Configuration (Ansible) | WEB01 → WEB02 | 22/tcp | key `opsadmin@web01`; ufw 22 from 10.10.20.0/24 |
+| Metrics scrape | WEB01 → WEB01, WEB02 | 9100/tcp | ufw: only 10.10.20.20 |
+| Dashboards | Laptop → WEB01 (SSH tunnel) | 3000/tcp | ufw 3000 from 10.10.20.0/24; sshd exception `AllowTcpForwarding local` for opsadmin |
+| Prometheus UI | Laptop → WEB01 (SSH tunnel) | 9090/tcp | same |
+| Logs | WEB02 → WEB01 | 514/tcp | ufw 514 from 10.10.20.0/24 |
+
+Code: [ansible/](../ansible/) (`web.yml` + role `webserver`, `rolling.yml`, `logging.yml`), [lab07/monitoring/](../lab07/monitoring/) (Prometheus and Grafana provisioning). Notes: [lab07/](../lab07/).
+
 ## Operations
 
 ### Create a user
@@ -236,6 +264,48 @@ VBoxManage startvm <VM> --type headless
 - Everything written after the snapshot is lost, logs and data included.
 - When the change is validated, delete the snapshot (`VBoxManage snapshot <VM> delete "<name>"`), so that long chains do not slow the disk.
 - **A snapshot is not a backup.** It sits on the same drive and depends on its whole chain of files. Real backups are covered in Lab 08.
+
+### Deploy a change with Ansible (Lab 07)
+
+Work on WEB01 as `opsadmin`, in `~/ansible`, with the same files as `ansible/` in the repository:
+
+1. **Change the code, not the servers.** Edit the role (`roles/webserver/...`), the template, or a variable in `defaults/main.yml`, then commit.
+2. **Preview:** `ansible-playbook web.yml -K --check --diff`. Nothing is changed; the diff shows what would be.
+3. **Apply:**
+   - **Configuration** (packages, files, firewall): `ansible-playbook web.yml -K`.
+   - **New TrackIt version on the web tier:** `ansible-playbook rolling.yml -K -e trackit_version=X.Y.Z`. It goes one host at a time, with a health check after each, and stops at the first failure.
+4. **Check idempotence:** run `web.yml` again. It must report `changed=0` everywhere; anything else is drift to explain.
+5. **If the rollout stopped:** read the failed task, fix the host (`systemctl status nginx`, `journalctl -u nginx`), then run the same command again. Hosts already updated report `ok`.
+
+`-K` asks for opsadmin's sudo password at each run; it is never stored.
+
+### Read the monitoring dashboard (Lab 07)
+
+1. Open the tunnel from the laptop: `ssh -N -L 3000:localhost:3000 -L 9090:localhost:9090 web01`.
+2. Open Grafana at `http://localhost:3000`, folder **BlueHarbor**, dashboard **BlueHarbor servers**:
+
+| Panel | Normal | Act when |
+|-------|--------|----------|
+| CPU used (%) | 5-25 % | Above the red 80 % line for minutes (the alert fires after 2 min) |
+| Memory used (%) | WEB01 ~60 %, WEB02 ~40 % | Above 90 %: there is no swap, so the next step is the OOM killer |
+| Disk / used (%) | ~15-30 % | Above 80 % (same threshold as `bh-health.sh`) |
+| Targets up | all **UP**, green | Any **DOWN**: the node_exporter or the host is down, or ufw blocks 9100 |
+
+- **Details:** dashboard **Node Exporter Full** has one host per selection, with network, disk I/O and load.
+- **Alerts:** Alerting → Alert rules → **High CPU on a web server**, states Normal / Pending / Firing per instance.
+- **Raw targets:** `http://localhost:9090/classic/targets`.
+
+### Where the logs are (Lab 07)
+
+| What | Where | Read with |
+|------|-------|-----------|
+| Logs of WEB02 (and any future sender) | WEB01 `/var/log/remote/<host>/<program>.log` (`sshd.log`, `sudo.log`, `kernel.log`, `bh-health.log`...) | `sudo grep ... /var/log/remote/*/sshd.log` |
+| Logs of WEB01 itself | journald, `/var/log/syslog`, `/var/log/auth.log` | `journalctl -u <unit>`, `journalctl -t <tag>` |
+| Health check | `/var/log/bh-health.log` on each server; warnings in syslog (tag `bh-health`) | `tail`, `grep WARN` |
+| IDS and bans | WEB01 `/var/log/suricata/fast.log`, `eve.json`; `/var/log/fail2ban.log` | `tail`, `jq` |
+| Firewall drops | `/var/log/ufw.log` (or `journalctl -k`) | `grep "UFW BLOCK"` |
+
+Ready-made searches (failed SSH logins on every host, bh-health warnings, sudo usage): [lab07/logging.md](../lab07/logging.md).
 
 ### Incident response (Lab 05)
 

@@ -1,0 +1,63 @@
+# Lab 07 - Exercise 7.5: central logging with rsyslog.
+# WEB01 collects (TCP 514), WEB02 forwards. Run: ansible-playbook logging.yml -K
+#
+# The configuration is checked with "rsyslogd -N1" after the copy and before the restart.
+# (copy's "validate:" cannot be used: AppArmor does not let rsyslogd read Ansible's temp file.)
+# If the check fails, the play stops and the handler never restarts rsyslog on a broken config.
+
+- name: Log collector
+  hosts: web01
+  become: true
+  tasks:
+    - name: Directory for remote logs
+      ansible.builtin.file:
+        path: /var/log/remote
+        state: directory
+        owner: syslog
+        group: adm
+        mode: "0750"
+
+    - name: Receive syslog over TCP 514, one file per host and program
+      ansible.builtin.copy:
+        src: files/rsyslog/10-receive.conf
+        dest: /etc/rsyslog.d/10-receive.conf
+        mode: "0644"
+      notify: Restart rsyslog
+
+    - name: Check the whole rsyslog configuration
+      ansible.builtin.command: rsyslogd -N1
+      changed_when: false
+
+    - name: Allow syslog from the server network only
+      community.general.ufw:
+        rule: allow
+        port: "514"
+        proto: tcp
+        from_ip: 10.10.20.0/24
+
+  handlers:
+    - name: Restart rsyslog
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted
+
+- name: Log senders
+  hosts: web02
+  become: true
+  tasks:
+    - name: Forward all messages to the collector, queued in memory while it is down
+      ansible.builtin.copy:
+        src: files/rsyslog/90-forward.conf
+        dest: /etc/rsyslog.d/90-forward.conf
+        mode: "0644"
+      notify: Restart rsyslog
+
+    - name: Check the whole rsyslog configuration
+      ansible.builtin.command: rsyslogd -N1
+      changed_when: false
+
+  handlers:
+    - name: Restart rsyslog
+      ansible.builtin.service:
+        name: rsyslog
+        state: restarted
