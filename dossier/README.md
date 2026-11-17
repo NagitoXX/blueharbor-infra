@@ -331,6 +331,8 @@ The full registers are kept with Lab 05, and this dossier keeps the summary. Bot
 | DC01: NetBIOS 139 | To close |
 | WEB01: SSH open to every server, not only admins | To filter |
 | Internal recon (incident drill): a SYN scan raises no alert | Detection rule to add, central logging (Lab 07) |
+| WEB01: SSH local forwarding allowed for `opsadmin` only (Lab 07, to reach Grafana/Prometheus; `/etc/ssh/sshd_config.d/30-opsadmin-tunnel.conf`) | **Accepted exception**: remove the file if the monitoring moves to its own host |
+| Grafana CPU alert has no contact point: it fires but notifies nobody (Lab 07) | To do: contact point for `team=sysops` |
 
 ### Earlier findings
 

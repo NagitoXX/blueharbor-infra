@@ -1,0 +1,2 @@
+stress-ng: info:  [10763] setting to a 5 mins, 0 secs run per stressor
+stress-ng: info:  [10763] dispatching hogs: 1 cpu

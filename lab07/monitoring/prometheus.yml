@@ -1,0 +1,16 @@
+# /etc/prometheus/prometheus.yml on WEB01 (Lab 07, Exercise 7.4)
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Prometheus watching itself
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # node_exporter on the web tier, installed by the webserver role (Exercise 7.2).
+  # ufw on each host only lets 10.10.20.20 (this server) reach 9100/tcp.
+  - job_name: node
+    static_configs:
+      - targets: ['10.10.20.20:9100', '10.10.20.21:9100']

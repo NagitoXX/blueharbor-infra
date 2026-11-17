@@ -1,0 +1,208 @@
+== 1. Prometheus
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  fonts-glyphicons-halflings javascript-common libjs-bootstrap
+  libjs-bootstrap4 libjs-d3 libjs-eonasdan-bootstrap-datetimepicker
+  libjs-jquery libjs-jquery-hotkeys libjs-moment libjs-moment-timezone
+  libjs-mustache libjs-popper.js libjs-rickshaw libjs-sizzle node-jquery
+The following NEW packages will be installed:
+  fonts-glyphicons-halflings javascript-common libjs-bootstrap
+  libjs-bootstrap4 libjs-d3 libjs-eonasdan-bootstrap-datetimepicker
+  libjs-jquery libjs-jquery-hotkeys libjs-moment libjs-moment-timezone
+  libjs-mustache libjs-popper.js libjs-rickshaw libjs-sizzle node-jquery
+  prometheus
+0 upgraded, 16 newly installed, 0 to remove and 10 not upgraded.
+Need to get 518 kB/26.5 MB of archives.
+After this operation, 333 MB of additional disk space will be used.
+Get:1 http://fr.archive.ubuntu.com/ubuntu noble/main amd64 libjs-jquery all 3.6.1+dfsg+~3.5.14-1 [328 kB]
+Get:2 http://fr.archive.ubuntu.com/ubuntu noble/universe amd64 libjs-jquery-hotkeys all 0~20130707+git2d51e3a9+dfsg-2ubuntu2 [11.5 kB]
+Get:3 http://fr.archive.ubuntu.com/ubuntu noble-updates/universe amd64 fonts-glyphicons-halflings all 1.009~3.4.1+dfsg-3+deb12u1build0.24.04.1 [119 kB]
+Get:4 http://fr.archive.ubuntu.com/ubuntu noble/main amd64 javascript-common all 11+nmu1 [5,936 B]
+Get:5 http://fr.archive.ubuntu.com/ubuntu noble/universe amd64 libjs-popper.js all 1.16.1+ds-6 [54.1 kB]
+Fetched 518 kB in 0s (3,135 kB/s)
+Selecting previously unselected package libjs-jquery.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 114431 files and directories currently installed.)
+Preparing to unpack .../00-libjs-jquery_3.6.1+dfsg+~3.5.14-1_all.deb ...
+Unpacking libjs-jquery (3.6.1+dfsg+~3.5.14-1) ...
+Selecting previously unselected package libjs-jquery-hotkeys.
+Preparing to unpack .../01-libjs-jquery-hotkeys_0~20130707+git2d51e3a9+dfsg-2ubuntu2_all.deb ...
+Unpacking libjs-jquery-hotkeys (0~20130707+git2d51e3a9+dfsg-2ubuntu2) ...
+Selecting previously unselected package fonts-glyphicons-halflings.
+Preparing to unpack .../02-fonts-glyphicons-halflings_1.009~3.4.1+dfsg-3+deb12u1build0.24.04.1_all.deb ...
+Unpacking fonts-glyphicons-halflings (1.009~3.4.1+dfsg-3+deb12u1build0.24.04.1) ...
+Selecting previously unselected package javascript-common.
+Preparing to unpack .../03-javascript-common_11+nmu1_all.deb ...
+Unpacking javascript-common (11+nmu1) ...
+Selecting previously unselected package libjs-popper.js.
+Preparing to unpack .../04-libjs-popper.js_1.16.1+ds-6_all.deb ...
+Unpacking libjs-popper.js (1.16.1+ds-6) ...
+Selecting previously unselected package libjs-bootstrap4.
+Preparing to unpack .../05-libjs-bootstrap4_4.6.1+dfsg1-4+deb12u1build0.24.04.1_all.deb ...
+Unpacking libjs-bootstrap4 (4.6.1+dfsg1-4+deb12u1build0.24.04.1) ...
+Selecting previously unselected package libjs-bootstrap.
+Preparing to unpack .../06-libjs-bootstrap_3.4.1+dfsg-3+deb12u1build0.24.04.1_all.deb ...
+Unpacking libjs-bootstrap (3.4.1+dfsg-3+deb12u1build0.24.04.1) ...
+Selecting previously unselected package libjs-moment.
+Preparing to unpack .../07-libjs-moment_2.29.4+ds-1_all.deb ...
+Unpacking libjs-moment (2.29.4+ds-1) ...
+Selecting previously unselected package libjs-eonasdan-bootstrap-datetimepicker.
+Preparing to unpack .../08-libjs-eonasdan-bootstrap-datetimepicker_4.17.47-6_all.deb ...
+Unpacking libjs-eonasdan-bootstrap-datetimepicker (4.17.47-6) ...
+Selecting previously unselected package libjs-moment-timezone.
+Preparing to unpack .../09-libjs-moment-timezone_0.5.40+dfsg-2~ubuntu2+2022g_all.deb ...
+Unpacking libjs-moment-timezone (0.5.40+dfsg-2~ubuntu2+2022g) ...
+Selecting previously unselected package libjs-mustache.
+Preparing to unpack .../10-libjs-mustache_3.0.1-1_all.deb ...
+Unpacking libjs-mustache (3.0.1-1) ...
+Selecting previously unselected package libjs-d3.
+Preparing to unpack .../11-libjs-d3_3.5.17-4_all.deb ...
+Unpacking libjs-d3 (3.5.17-4) ...
+Selecting previously unselected package libjs-rickshaw.
+Preparing to unpack .../12-libjs-rickshaw_1.5.1.dfsg-5_all.deb ...
+Unpacking libjs-rickshaw (1.5.1.dfsg-5) ...
+Selecting previously unselected package prometheus.
+Preparing to unpack .../13-prometheus_2.45.3+ds-2ubuntu0.3_amd64.deb ...
+Unpacking prometheus (2.45.3+ds-2ubuntu0.3) ...
+Selecting previously unselected package libjs-sizzle.
+Preparing to unpack .../14-libjs-sizzle_2.3.10+ds+~2.3.6-1_all.deb ...
+Unpacking libjs-sizzle (2.3.10+ds+~2.3.6-1) ...
+Selecting previously unselected package node-jquery.
+Preparing to unpack .../15-node-jquery_3.6.1+dfsg+~3.5.14-1_all.deb ...
+Unpacking node-jquery (3.6.1+dfsg+~3.5.14-1) ...
+Setting up javascript-common (11+nmu1) ...
+Setting up libjs-popper.js (1.16.1+ds-6) ...
+Setting up fonts-glyphicons-halflings (1.009~3.4.1+dfsg-3+deb12u1build0.24.04.1) ...
+Setting up libjs-moment (2.29.4+ds-1) ...
+Setting up libjs-sizzle (2.3.10+ds+~2.3.6-1) ...
+Setting up libjs-d3 (3.5.17-4) ...
+Setting up libjs-moment-timezone (0.5.40+dfsg-2~ubuntu2+2022g) ...
+Setting up libjs-bootstrap4 (4.6.1+dfsg1-4+deb12u1build0.24.04.1) ...
+Setting up libjs-jquery (3.6.1+dfsg+~3.5.14-1) ...
+Setting up libjs-mustache (3.0.1-1) ...
+Setting up libjs-jquery-hotkeys (0~20130707+git2d51e3a9+dfsg-2ubuntu2) ...
+Setting up node-jquery (3.6.1+dfsg+~3.5.14-1) ...
+Setting up libjs-bootstrap (3.4.1+dfsg-3+deb12u1build0.24.04.1) ...
+Setting up libjs-eonasdan-bootstrap-datetimepicker (4.17.47-6) ...
+Setting up libjs-rickshaw (1.5.1.dfsg-5) ...
+Setting up prometheus (2.45.3+ds-2ubuntu0.3) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/prometheus.service → /usr/lib/systemd/system/prometheus.service.
+Processing triggers for man-db (2.12.0-4build2) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
+Checking /etc/prometheus/prometheus.yml
+ SUCCESS: /etc/prometheus/prometheus.yml is valid prometheus config file syntax
+
+== 2. Grafana OSS (apt.grafana.com, as in the Grafana docs 'Install on Debian or Ubuntu')
+Reading package lists...
+Building dependency tree...
+Reading state information...
+software-properties-common is already the newest version (0.99.49.4).
+software-properties-common set to manually installed.
+wget is already the newest version (1.21.4-1ubuntu4.5).
+wget set to manually installed.
+gpg is already the newest version (2.4.4-2ubuntu17.6).
+gpg set to manually installed.
+The following NEW packages will be installed:
+  apt-transport-https
+0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
+Need to get 26.2 kB of archives.
+After this operation, 36.9 kB of additional disk space will be used.
+Get:1 http://fr.archive.ubuntu.com/ubuntu noble-updates/universe amd64 apt-transport-https all 2.8.4ubuntu0.1 [26.2 kB]
+Fetched 26.2 kB in 0s (460 kB/s)
+Selecting previously unselected package apt-transport-https.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 115529 files and directories currently installed.)
+Preparing to unpack .../apt-transport-https_2.8.4ubuntu0.1_all.deb ...
+Unpacking apt-transport-https (2.8.4ubuntu0.1) ...
+Setting up apt-transport-https (2.8.4ubuntu0.1) ...
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Hit:1 http://fr.archive.ubuntu.com/ubuntu noble InRelease
+Get:2 http://fr.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Hit:3 http://fr.archive.ubuntu.com/ubuntu noble-backports InRelease
+Get:4 http://fr.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,452 kB]
+Hit:5 http://security.ubuntu.com/ubuntu noble-security InRelease
+Get:6 http://fr.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [316 kB]
+Get:7 http://fr.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1,887 kB]
+Get:8 http://fr.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [433 kB]
+Get:9 http://fr.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1,712 kB]
+Get:10 https://apt.grafana.com stable InRelease [7,661 B]
+Get:11 https://apt.grafana.com stable/main amd64 Packages [389 kB]
+Fetched 6,324 kB in 5s (1,293 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  grafana
+0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
+Need to get 400 MB of archives.
+After this operation, 1,428 MB of additional disk space will be used.
+Get:1 https://apt.grafana.com stable/main amd64 grafana amd64 13.3.1 [400 MB]
+Fetched 400 MB in 13s (31.8 MB/s)
+Selecting previously unselected package grafana.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 115533 files and directories currently installed.)
+Preparing to unpack .../grafana_13.3.1_amd64.deb ...
+Unpacking grafana (13.3.1) ...
+Setting up grafana (13.3.1) ...
+info: Selecting UID from range 100 to 999 ...
+
+info: Adding system user `grafana' (UID 111) ...
+info: Adding new user `grafana' (UID 111) with group `grafana' ...
+info: Not creating home directory `/usr/share/grafana'.
+### NOT starting on installation, please execute the following statements to configure grafana to start automatically using systemd
+ sudo /bin/systemctl daemon-reload
+ sudo /bin/systemctl enable grafana-server
+### You can start grafana-server by executing
+ sudo /bin/systemctl start grafana-server
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+== 2b. Grafana provisioning: data source, dashboards, alert rule
+Created symlink /etc/systemd/system/multi-user.target.wants/grafana-server.service → /usr/lib/systemd/system/grafana-server.service.
+== 3. Firewall: Grafana and Prometheus from the server network (laptop arrives via 10.10.20.1)
+Rule added
+Rule added
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW IN    10.10.20.0/24             
+[ 2] 80/tcp                     ALLOW IN    Anywhere                  
+[ 3] 9100/tcp                   ALLOW IN    10.10.20.20               
+[ 4] 3000/tcp                   ALLOW IN    10.10.20.0/24             
+[ 5] 9090/tcp                   ALLOW IN    10.10.20.0/24             
+[ 6] 80/tcp (v6)                ALLOW IN    Anywhere (v6)             
+
+== Checks
+active
+active
+active
+node http://10.10.20.20:9100/metrics up
+node http://10.10.20.21:9100/metrics down
+prometheus http://localhost:9090/metrics up

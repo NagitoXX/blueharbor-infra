@@ -1,0 +1,4 @@
+Prometheus targets seen from the laptop (http://localhost:9090/classic/targets through the SSH tunnel), 2026-11-17T10:57:03Z
+node        http://10.10.20.20:9100/metrics    UP 0.079969016
+node        http://10.10.20.21:9100/metrics    UP 0.055747911
+prometheus  http://localhost:9090/metrics      UP 0.016351136

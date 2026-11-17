@@ -1,0 +1,50 @@
+# /etc/grafana/provisioning/alerting/bh-cpu.yaml
+# Grafana-managed alert rule: CPU above 80 % for 2 minutes, per server.
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: bh-servers
+    folder: BlueHarbor
+    interval: 30s
+    rules:
+      - uid: bh-high-cpu
+        title: High CPU on a web server
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus-bh
+            model:
+              refId: A
+              expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100)
+              range: true
+              intervalMs: 15000
+              maxDataPoints: 43200
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [80]
+        for: 2m
+        noDataState: NoData
+        execErrState: Error
+        labels:
+          severity: warning
+          team: sysops
+        annotations:
+          summary: "CPU above 80 % on {{ $labels.instance }} for 2 minutes"
+          description: "Check the processes with top on that host; if it is a deployment or a test, note it in the change log."

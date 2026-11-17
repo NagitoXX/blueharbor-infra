@@ -1,0 +1,11 @@
+# /etc/grafana/provisioning/dashboards/blueharbor.yaml
+# Loads every dashboard JSON found in /var/lib/grafana/dashboards into the BlueHarbor folder.
+apiVersion: 1
+providers:
+  - name: blueharbor
+    folder: BlueHarbor
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false
+    options:
+      path: /var/lib/grafana/dashboards
