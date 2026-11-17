@@ -1,0 +1,14 @@
+$ web01: ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519 -C opsadmin@web01
+256 SHA256:QCgrDBzw0xMouqPL4FMou15IM7it/0dVAbIaMlCRCCA opsadmin@web01 (ED25519)
+
+$ web02: append the web01 public key to ~/.ssh/authorized_keys
+ssh-ed25519 he@blueharbor
+ssh-ed25519 opsadmin@web01
+
+$ web01: ssh-keyscan -t ed25519 10.10.20.21 >> ~/.ssh/known_hosts; ssh-keygen -lf ~/.ssh/known_hosts
+256 SHA256:/eSe+KP5jDByEo637Ro4uHw+gG4i5ZpT26GSUgAeKxk 10.10.20.21 (ED25519)
+$ web02: its own host key (must match the line above)
+256 SHA256:/eSe+KP5jDByEo637Ro4uHw+gG4i5ZpT26GSUgAeKxk root@web02 (ED25519)
+
+$ web01: ssh -o BatchMode=yes opsadmin@10.10.20.21 hostname
+web02
